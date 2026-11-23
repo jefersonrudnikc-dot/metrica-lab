@@ -4,6 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RUDNIK | Métrica Lab</title>
+<meta name="description" content="Calculadora, Raio-X e simulador para decidir o seu investimento em marketing. Demonstração gratuita, direto no navegador.">
+<meta name="theme-color" content="#0E2740">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="alternate icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='5' fill='%230E2740'/%3E%3Crect x='6' y='14' width='3' height='6' fill='%23fff'/%3E%3Crect x='11.5' y='10' width='3' height='10' fill='%23fff'/%3E%3Crect x='17' y='6' width='3' height='14' fill='%23F4F27A'/%3E%3C/svg%3E">
+<!-- Prévia ao compartilhar (LinkedIn, WhatsApp etc.). Se o endereço final for outro, troque as 3 URLs abaixo. -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="RUDNIK | Métrica Lab">
+<meta property="og:title" content="RUDNIK | Métrica Lab: seus números precisam gerar decisões">
+<meta property="og:description" content="Calcule indicadores, encontre o gargalo do funil e simule o próximo investimento. Demonstração gratuita.">
+<meta property="og:url" content="https://metrica-lab.vercel.app/">
+<meta property="og:image" content="https://metrica-lab.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="RUDNIK | Métrica Lab: análise, diagnóstico e simuladores de campanhas">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://metrica-lab.vercel.app/og-image.png">
+<link rel="canonical" href="https://metrica-lab.vercel.app/">
+<!-- Vercel Web Analytics (ative em Project > Analytics) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -569,6 +590,17 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .chan{grid-template-columns:86px minmax(0,1fr) 38px;font-size:12px;gap:8px}
   .dash-bar{padding:12px 14px}
 }
+
+.foot-link{background:none;border:0;padding:0;margin-left:14px;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;font:inherit}
+.consent{position:fixed;left:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:60;max-width:420px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:16px 18px;box-shadow:0 18px 40px -12px rgba(8,25,45,.35);font-size:13px}
+.consent p{margin:0 0 12px;color:var(--muted)}
+.consent-act{display:flex;justify-content:flex-end;align-items:center;gap:14px}
+.consent .foot-link{margin:0;color:var(--accent-strong)}
+.priv{max-width:560px;width:calc(100% - 32px);border:1px solid var(--line);border-radius:12px;padding:28px;background:var(--surface);color:var(--ink)}
+.priv::backdrop{background:rgba(8,20,32,.55)}
+.priv h2{margin:0 0 14px;font-size:22px}
+.priv p{margin:0 0 12px;font-size:14px;color:var(--muted)}.priv b{color:var(--ink)}
+@media (max-width:720px){.consent{left:16px;right:88px;max-width:none}}
 </style>
 </head>
 <body>
@@ -918,8 +950,21 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Falar com um especialista pelo WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.5-4.9a8.5 8.5 0 1 1 16-4.1z"/><path d="M9 10.5h6M9 13.5h4"/></svg><span>Fale com a gente</span></a>
 <div class="wa-tip" id="waTip" role="status" hidden><b>Ficou com alguma dúvida?</b>Um especialista responde pelo WhatsApp.<button type="button" id="waTipClose" aria-label="Fechar">×</button></div>
 
+
+<div class="consent" id="consent" role="region" aria-label="Aviso de privacidade" hidden>
+  <p>Medimos as visitas de forma anônima para melhorar a página. Os números que você digita na demonstração não saem do seu navegador.</p>
+  <div class="consent-act"><button type="button" class="foot-link" data-priv>Saiba mais</button><button type="button" class="btn btn-solid btn-sm" id="consentOk">Entendi</button></div>
+</div>
+<dialog class="priv" id="priv" aria-labelledby="privTitle">
+  <h2 id="privTitle">Privacidade</h2>
+  <p><b>O que medimos.</b> Visitas, páginas vistas, origem do acesso e cliques nos botões principais, de forma anônima e agregada, pela Vercel Web Analytics. Não identificamos quem você é.</p>
+  <p><b>Dados da demonstração.</b> Os números digitados na calculadora, no Raio-X e no simulador ficam só no seu navegador. Nada é enviado nem guardado por nós.</p>
+  <p><b>Contato pelo WhatsApp.</b> O formulário apenas monta a mensagem e abre o WhatsApp. O envio depende da sua confirmação, e a conversa segue as regras do próprio WhatsApp.</p>
+  <p><b>Seus direitos.</b> Para dúvidas ou pedidos sobre seus dados, fale com a gente pelo WhatsApp (41) 99599-6976.</p>
+  <button type="button" class="btn btn-solid btn-sm" id="privClose">Fechar</button>
+</dialog>
 <footer class="foot">
-  <div class="wrap foot-in"><span>@RUDNIK | Métrica Lab</span><span>Demonstração gratuita. A versão personalizada é montada para cada operação.</span></div>
+  <div class="wrap foot-in"><span>@RUDNIK | Métrica Lab <button type="button" class="foot-link" data-priv>Privacidade</button></span><span>Demonstração gratuita. A versão personalizada é montada para cada operação.</span></div>
 </footer>
 
 <script>
@@ -1214,6 +1259,28 @@ function dashInit(){
   },{threshold:.3}).observe(root);
 }
 dashInit();
+/* Medição (Vercel Web Analytics): só eventos anônimos */
+function track(name,data){try{window.va&&window.va('event',Object.assign({name},data?{data}:{}))}catch(e){}}
+document.addEventListener('click',e=>{
+  const el=e.target.closest('a,button');if(!el)return;
+  const txt=(el.textContent||'').trim();
+  if(el.id==='waFloat')track('whatsapp_flutuante');
+  else if(/diagn[oó]stico/i.test(txt))track('cta_diagnostico',{texto:txt});
+  else if(/Testar a demonstra/i.test(txt))track('cta_demonstracao');
+  else if(el.getAttribute('href')==='#sob-medida')track('cta_sob_medida');
+});
+$('contactForm').addEventListener('submit',()=>{if($('cName').value.trim())track('whatsapp_formulario',{investimento:$('cBudget').value,objetivo:$('cGoal').value,midia:$('cWho').value})});
+addEventListener('hashchange',()=>track('pagina',{nome:location.hash.slice(1)||'inicio'}));
+/* Aviso de privacidade */
+(function(){
+  const box=$('consent'),dlg=$('priv');let seen=false;
+  try{seen=localStorage.getItem('ml-consent')==='1'}catch(e){}
+  if(!seen)box.hidden=false;
+  $('consentOk').addEventListener('click',()=>{box.hidden=true;try{localStorage.setItem('ml-consent','1')}catch(e){}});
+  document.querySelectorAll('[data-priv]').forEach(b=>b.addEventListener('click',()=>{if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','')}));
+  $('privClose').addEventListener('click',()=>dlg.close?dlg.close():dlg.removeAttribute('open'));
+})();
+
 $('liveGo').addEventListener('click',()=>{const v=document.querySelector('.workspace > section.panel');v.scrollIntoView({behavior:reduce?'auto':'smooth'})});
 /* Carrosséis no celular: pontos indicadores e plano em destaque centralizado */
 (function(){
