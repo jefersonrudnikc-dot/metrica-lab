@@ -1,0 +1,1245 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RUDNIK | Métrica Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F6F9; --surface:#FFFFFF; --ink:#14263A; --muted:#5E6E80; --faint:#8593A3;
+  --line:#DFE5EC; --line-strong:#C9D2DC; --track:#EBEFF4;
+  --navy:#0E2740; --navy-2:#163552; --navy-3:#21476B; --on-navy:#FFFFFF; --on-navy-muted:#A9BCD0;
+  --accent:#2D6CB0; --accent-strong:#1F5591; --accent-soft:#E8F0F9; --sky:#7FB2EA;
+  --good:#2F7D5B; --good-soft:#E6F2EC; --warn:#A86B12; --warn-soft:#FBF1E1;
+  --teal:#12857A; --teal-soft:#E2F3F0; --violet:#6450C8; --violet-soft:#EEEBFA; 
+  --lemon:#F4F27A;
+  --focus:#2D6CB0; --wa:#168A45; --wa-strong:#11733A;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1621; --surface:#12202E; --ink:#E4EAF1; --muted:#9AA9B8; --faint:#73849A;
+    --line:#22344A; --line-strong:#2E4560; --track:#1C2D40;
+    --navy:#081420; --navy-2:#0F2236; --navy-3:#1A3550; --on-navy:#E9EFF5; --on-navy-muted:#8BA1B8;
+    --accent:#6FA3DD; --accent-strong:#9CC0EA; --accent-soft:#16304A; --sky:#7FB2EA;
+    --good:#5DB58A; --good-soft:#163428; --warn:#D9A04A; --warn-soft:#3A2B12;
+    --teal:#4CC3B3; --teal-soft:#12332F; --violet:#A497EC; --violet-soft:#25214A; --focus:#9CC0EA; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1621; --surface:#12202E; --ink:#E4EAF1; --muted:#9AA9B8; --faint:#73849A;
+  --line:#22344A; --line-strong:#2E4560; --track:#1C2D40;
+  --navy:#081420; --navy-2:#0F2236; --navy-3:#1A3550; --on-navy:#E9EFF5; --on-navy-muted:#8BA1B8;
+  --accent:#6FA3DD; --accent-strong:#9CC0EA; --accent-soft:#16304A; --sky:#7FB2EA;
+  --good:#5DB58A; --good-soft:#163428; --warn:#D9A04A; --warn-soft:#3A2B12;
+  --teal:#4CC3B3; --teal-soft:#12332F; --violet:#A497EC; --violet-soft:#25214A; --focus:#9CC0EA; color-scheme:dark;
+}
+html{--hdr:65px;scroll-padding-top:calc(env(safe-area-inset-top,0px) + var(--hdr) + 12px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:400 15px/1.55 "IBM Plex Sans","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+[hidden]{display:none!important}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 22px;border-radius:5px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid transparent;cursor:pointer;white-space:nowrap}
+.btn-primary{background:var(--lemon);color:#12223A}
+.btn-primary:hover{background:#F8F69C}
+.btn-line{border-color:rgba(169,188,208,.5);color:var(--on-navy)}
+.btn-line:hover{border-color:var(--on-navy)}
+.btn-solid{background:var(--accent);color:#fff}
+.btn-solid:hover{background:var(--accent-strong)}
+.btn-sm{height:36px;padding:0 14px;font-size:13px}
+
+/* Barra superior */
+.appbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--navy);color:var(--on-navy);border-bottom:1px solid rgba(169,188,208,.14);transition:box-shadow .25s}
+.appbar.scrolled{box-shadow:0 10px 28px -12px rgba(5,18,32,.55)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:41;background:var(--navy)}
+.appbar-in{display:flex;align-items:center;gap:32px;height:64px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex:none}
+.logo-name{font-weight:600;font-size:15px;letter-spacing:.16em}
+.logo-sep{width:1px;height:18px;background:var(--on-navy-muted);opacity:.55}
+.logo-product{font-size:15px;color:var(--on-navy-muted)}
+.menu{display:flex;gap:4px;flex:1}
+.menu a{text-decoration:none;color:var(--on-navy-muted);font-size:14px;font-weight:500;padding:8px 12px;border-radius:4px}
+.menu a:hover{color:var(--on-navy)}
+.menu a[aria-current="page"]{color:var(--on-navy);background:rgba(255,255,255,.08)}
+
+/* Hero */
+.hero{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.net{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;
+  -webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.3) 0%,#000 62%);mask-image:linear-gradient(90deg,rgba(0,0,0,.3) 0%,#000 62%)}
+.tool-head .net{-webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.18) 0%,#000 75%);mask-image:linear-gradient(90deg,rgba(0,0,0,.18) 0%,#000 75%)}
+.cta-band{position:relative;overflow:hidden}
+.cta-band .net{-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 80%);mask-image:linear-gradient(90deg,transparent 0%,#000 80%)}
+.cta-in{position:relative}
+.hero-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:56px;align-items:center;padding-top:88px;padding-bottom:104px}
+.hero h1{font-size:clamp(38px,5.4vw,64px);line-height:1.04;letter-spacing:-.03em;font-weight:600;margin:0 0 24px;max-width:13ch}
+.hero-lead{font-size:18px;line-height:1.6;color:var(--on-navy-muted);margin:0 0 36px;max-width:46ch}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-small{margin:20px 0 0;font-size:13px;color:var(--on-navy-muted)}
+
+/* Prévia do produto no hero */
+.preview{background:var(--surface);color:var(--ink);border-radius:10px;box-shadow:0 40px 80px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06);overflow:hidden}
+.pv-top{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);font-size:13px}
+.pv-top b{font-weight:600}
+.pv-top span{color:var(--faint)}
+.pv-kpis{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}
+.pv-kpi{padding:16px 20px;border-right:1px solid var(--line)}
+.pv-kpi:last-child{border-right:0}
+.pv-kpi small{display:block;font-size:12px;color:var(--muted);font-weight:500}
+.pv-kpi strong{display:block;font-size:26px;font-weight:500;letter-spacing:-.02em;margin-top:2px}
+.pv-body{padding:18px 20px 20px}
+.pv-label{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:12px}
+.pv-row{display:grid;grid-template-columns:84px minmax(0,1fr) 70px;gap:12px;align-items:center;font-size:13px;margin-bottom:10px}
+.pv-row .t{height:18px;background:var(--track);border-radius:2px;overflow:hidden}
+.pv-row .t span{display:block;height:100%;background:var(--accent);width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.pv-row:nth-child(3) .t span{opacity:.8}.pv-row:nth-child(4) .t span{opacity:.6}
+.pv-row .v{text-align:right;font-weight:500}
+.pv-alert{display:flex;gap:12px;align-items:flex-start;margin-top:16px;padding:12px 14px;background:var(--warn-soft);border-radius:5px;font-size:13px}
+.pv-alert i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--warn);margin-top:6px}
+.pv-alert b{font-weight:600;color:var(--warn)}
+
+/* Seções da página inicial */
+.section{padding:96px 0}
+.section-head{max-width:640px;margin-bottom:56px}
+.section-head h2{font-size:clamp(28px,3.4vw,40px);line-height:1.12;letter-spacing:-.02em;font-weight:600;margin:0 0 14px}
+.section-head p{font-size:17px;color:var(--muted);margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;position:relative;padding-top:64px}
+.steps::before,.rail-fill{content:"";position:absolute;top:19px;left:calc(16.666% - 8px);height:2px;border-radius:2px}
+.steps::before{width:calc(66.666% + 16px);background:var(--line-strong)}
+.rail-fill{width:0;background:var(--accent);transition:width 1.6s cubic-bezier(.4,0,.2,1) .2s}
+.steps.in .rail-fill{width:calc(66.666% + 16px)}
+.node{position:absolute;top:-64px;left:50%;transform:translateX(-50%);width:40px;height:40px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--line-strong);display:grid;place-items:center;font-weight:600;font-size:15px;color:var(--muted);
+  transition:background .3s,border-color .3s,color .3s,box-shadow .3s;z-index:1}
+.steps.in .node{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 6px var(--accent-soft)}
+.steps.in .step:nth-of-type(2) .node{transition-delay:.9s}
+.steps.in .step:nth-of-type(3) .node{transition-delay:1.75s}
+.step{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:flex;flex-direction:column}
+.step-visual{height:172px;border-bottom:1px solid var(--line);background:var(--bg);border-radius:8px 8px 0 0;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:20px}
+.step-text{padding:24px;display:flex;flex-direction:column;flex:1}
+.step h3{font-size:20px;font-weight:600;margin:0 0 8px;letter-spacing:-.01em}
+.step p{margin:0 0 20px;color:var(--muted)}
+.step a{margin-top:auto;font-weight:600;font-size:14px;color:var(--accent-strong);text-decoration:none}
+.step a:hover{text-decoration:underline}
+.mini-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.mini-kpis div{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:10px}
+.mini-kpis small{display:block;font-size:11px;color:var(--muted)}
+.mini-kpis b{font-size:17px;font-weight:500}
+.mini-list{width:100%;display:grid;gap:8px}
+.mini-list div{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:9px 12px;font-size:12px}
+.mini-list i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none}
+.mini-list .w i{background:var(--warn)}.mini-list .g i{background:var(--good)}
+.mini-curve{width:100%;height:100%}
+
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+.audience{display:grid;gap:0;border-top:1px solid var(--line)}
+.aud{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:22px 0;border-bottom:1px solid var(--line)}
+.aud b{font-weight:600}
+.aud span{color:var(--muted)}
+
+.personas-band{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.personas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.persona{display:flex;flex-direction:column;padding:4px 36px 4px 0}
+.persona + .persona{padding-left:36px;border-left:1px solid var(--line)}
+.p-icon{width:46px;height:46px;border-radius:10px;background:var(--accent-soft);color:var(--accent-strong);display:grid;place-items:center;margin-bottom:24px}
+.p-role{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 12px}
+.p-q{font-size:22px;line-height:1.35;font-weight:500;letter-spacing:-.012em;margin:0 0 16px;color:var(--ink);text-wrap:balance}
+.p-a{margin:0 0 24px;color:var(--muted);font-size:14px}
+.persona a{margin-top:auto;font-weight:600;font-size:14px;color:var(--accent-strong);text-decoration:none}
+.persona a:hover{text-decoration:underline}
+.cta-band{background:var(--navy);color:var(--on-navy)}
+.offer .section-head{max-width:760px}
+.compare{border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.cmp-row{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1fr)}
+.cmp-row > div{padding:18px 24px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.cmp-row > div:first-child{font-weight:600;color:var(--ink)}
+.cmp-row > div:last-child{background:var(--accent-soft);color:var(--ink);border-top-color:rgba(45,108,176,.14)}
+.cmp-head > div{border-top:0;padding:24px}
+.cmp-head b{display:block;font-size:17px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.cmp-head small{font-size:13px;color:var(--muted)}
+.cmp-head > div:last-child{background:var(--navy);color:var(--on-navy)}
+.cmp-head > div:last-child b{color:var(--on-navy)}
+.cmp-head > div:last-child small{color:var(--on-navy-muted)}
+.phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:64px}
+.phase-n{width:30px;height:30px;border-radius:50%;background:var(--navy-3);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600;margin-bottom:16px}
+.phase h3{font-size:17px;font-weight:600;margin:0 0 6px}
+.phase p{margin:0;color:var(--muted);font-size:14px}
+.stance{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;margin-top:56px;padding:28px 32px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px}
+.stance p{margin:0;font-size:17px;line-height:1.5;max-width:60ch}
+.stance b{font-weight:600}
+.offer-sub{font-size:clamp(24px,2.6vw,30px);line-height:1.2;font-weight:600;letter-spacing:-.015em;margin:88px 0 8px}
+.offer-sub + .desc{font-size:16px;margin-bottom:40px}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
+.plan{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:32px 28px 28px;display:flex;flex-direction:column}
+.plan.featured{border:2px solid var(--accent);box-shadow:0 28px 56px -28px rgba(14,39,64,.4)}
+.plan-flag{position:absolute;top:-13px;left:26px;background:var(--lemon);color:#12223A;font-size:12px;font-weight:600;padding:4px 10px;border-radius:3px}
+.plan-for{font-size:13px;font-weight:500;color:var(--muted);margin:0 0 6px}
+.plan h4{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:0 0 4px}
+.plan-price{font-size:15px;font-weight:600;color:var(--accent-strong);margin:0 0 16px}
+.plan-what{font-size:14px;color:var(--muted);margin:0}
+.plan ul{list-style:none;padding:0;margin:22px 0 28px;display:grid;gap:11px;font-size:14px}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li svg{flex:none;color:var(--accent);margin-top:3px}
+.plan .btn{margin-top:auto;width:100%}
+.btn-outline{border-color:var(--line-strong);color:var(--ink);background:transparent}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent-strong)}
+.ai{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:64px;margin-top:88px;padding-top:64px;border-top:1px solid var(--line)}
+.ai h3{font-size:clamp(24px,2.6vw,30px);line-height:1.2;font-weight:600;letter-spacing:-.015em;margin:0 0 12px}
+.ai > div > p{color:var(--muted);margin:0;font-size:16px;max-width:42ch}
+.ai-points{display:grid;gap:24px}
+.ai-points div{padding-left:20px;border-left:2px solid var(--accent)}
+.ai-points b{display:block;font-weight:600;font-size:16px;margin-bottom:4px}
+.ai-points span{color:var(--muted);font-size:14px}
+.pro-note{display:flex;gap:14px;align-items:flex-start;margin-top:28px;padding:16px 18px;border:1px dashed var(--accent);border-radius:6px;font-size:13px;line-height:1.55}
+.pro-note .tag{flex:none;font-size:12px;font-weight:600;color:#fff;background:var(--navy-3);border-radius:3px;padding:2px 8px;margin-top:1px;white-space:nowrap}
+.pro-note a{color:var(--accent-strong);font-weight:600;text-decoration:none;white-space:nowrap}
+.pro-note a:hover{text-decoration:underline}
+.contact-in{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:72px;align-items:center;padding-top:104px;padding-bottom:104px}
+.contact h2{font-size:clamp(30px,3.8vw,46px);line-height:1.08;letter-spacing:-.025em;font-weight:600;margin:0 0 18px;max-width:15ch}
+.contact .lead{color:var(--on-navy-muted);font-size:17px;line-height:1.6;margin:0 0 36px;max-width:46ch}
+.gets{list-style:none;padding:0;margin:0;display:grid;gap:16px}
+.gets li{display:flex;gap:14px;align-items:flex-start;font-size:15px}
+.gets svg{flex:none;color:var(--sky);margin-top:2px}
+.form-card{background:var(--surface);color:var(--ink);border-radius:10px;padding:32px;box-shadow:0 40px 80px -20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.06)}
+.form-card h3{font-size:19px;font-weight:600;margin:0 0 4px;letter-spacing:-.01em}
+.form-card .fields{grid-template-columns:1fr}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);margin-top:18px;cursor:pointer}
+.check input{margin:2px 0 0;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.btn-wa{background:var(--wa);color:#fff;width:100%;margin-top:22px;gap:10px;height:50px;font-size:16px}
+.btn-wa:hover{background:var(--wa-strong)}
+.form-note{font-size:12px;color:var(--faint);margin:12px 0 0;text-align:center}
+.err{font-size:12px;color:var(--warn);margin:6px 0 0}
+.field input.invalid{border-color:var(--warn);box-shadow:0 0 0 3px var(--warn-soft)}
+.wa-float{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;align-items:center;gap:10px;height:56px;padding:0 22px 0 18px;border-radius:28px;background:var(--wa);color:#fff;text-decoration:none;font-weight:600;font-size:15px;box-shadow:0 14px 30px -10px rgba(8,25,45,.55);transition:opacity .3s,transform .3s,background .2s}
+.wa-float:hover{background:var(--wa-strong)}
+.wa-float.away{opacity:0;transform:translateY(16px);pointer-events:none}
+.wa-float::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(22,138,69,.45);animation:ring 2.4s ease-out 3}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(22,138,69,.45)}100%{box-shadow:0 0 0 18px rgba(22,138,69,0)}}
+.wa-tip{position:fixed;right:24px;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:50;max-width:270px;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:14px 40px 14px 16px;font-size:13px;color:var(--muted);box-shadow:0 18px 40px -12px rgba(8,25,45,.35);animation:rise .4s cubic-bezier(.2,.7,.2,1) both}
+.wa-tip b{display:block;font-weight:600;color:var(--ink);margin-bottom:2px;font-size:14px}
+.wa-tip button{position:absolute;top:6px;right:6px;width:30px;height:30px;border:0;background:none;color:var(--muted);font-size:20px;line-height:1;cursor:pointer;border-radius:4px}
+.wa-tip button:hover{color:var(--ink)}
+.cta-in{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;padding-top:72px;padding-bottom:72px}
+.cta-in h2{font-size:clamp(26px,3vw,36px);line-height:1.15;letter-spacing:-.02em;font-weight:600;margin:0 0 8px}
+.cta-in p{margin:0;color:var(--on-navy-muted);font-size:16px}
+
+/* Páginas das ferramentas */
+.tool-head{background:var(--navy);color:var(--on-navy);position:relative;overflow:hidden}
+.tool-head-in{position:relative}
+.tool-head-in{padding-top:40px;padding-bottom:44px;display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+.crumb{font-size:13px;color:var(--on-navy-muted);margin-bottom:10px}
+.tool-head h1{font-size:clamp(28px,3.6vw,40px);line-height:1.1;letter-spacing:-.02em;font-weight:600;margin:0 0 10px}
+.tool-head p{margin:0;color:var(--on-navy-muted);font-size:16px;max-width:56ch}
+.progress{display:flex;gap:6px}
+.progress a{width:44px;height:4px;border-radius:2px;background:rgba(169,188,208,.25)}
+.progress a.on{background:var(--sky)}
+.tool-body{padding-top:32px;padding-bottom:64px}
+.workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:24px;align-items:start}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.data{padding:24px;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hdr) + 24px)}
+.data h2,.view h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.desc{color:var(--muted);font-size:13px;margin:0}
+.fields{display:grid;gap:16px;margin-top:20px}
+.field label{display:block;font-size:13px;font-weight:500;margin-bottom:6px}
+.field .opt{color:var(--faint);font-weight:400}
+.field input,.field select{width:100%;height:40px;border:1px solid var(--line-strong);border-radius:4px;padding:0 12px;background:var(--surface);color:var(--ink)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.ghost{margin-top:20px;background:none;border:1px solid var(--line-strong);border-radius:4px;height:36px;padding:0 14px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer}
+.ghost:hover{border-color:var(--accent);color:var(--accent-strong)}
+.privacy{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--faint)}
+.data{background:var(--navy-2);border-color:transparent;color:var(--on-navy)}
+.data .desc,.data .opt,.data .privacy{color:var(--on-navy-muted)}
+.data .privacy{border-top-color:rgba(169,188,208,.18)}
+.data .field input{background:rgba(255,255,255,.06);border-color:rgba(169,188,208,.3);color:var(--on-navy);font-size:16px;font-weight:500}
+.data .field input::placeholder{color:var(--on-navy-muted)}
+.data .field input:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(127,178,234,.25);background:rgba(255,255,255,.1)}
+.data .ghost{border-color:rgba(169,188,208,.35);color:var(--on-navy)}
+.data .ghost:hover{border-color:var(--sky);color:var(--on-navy)}
+.uses{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.uses span{font-size:12px;padding:3px 9px;border-radius:3px;border:1px solid rgba(169,188,208,.28);color:var(--on-navy-muted)}
+.uses span.on{background:rgba(127,178,234,.18);border-color:rgba(127,178,234,.5);color:var(--on-navy)}
+.view{padding:28px 28px 32px}
+.block + .block{margin-top:36px;padding-top:32px;border-top:1px solid var(--line)}
+.block-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.next{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:36px;padding:20px 24px;background:var(--accent-soft);border-radius:6px}
+.next p{margin:0;font-size:14px}
+.next b{font-weight:600}
+
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:6px}
+.kpis.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{padding:18px 20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.kpis .kpi:nth-child(3n){border-right:0}
+.kpis .kpi:nth-last-child(-n+3){border-bottom:0}
+.kpis.four .kpi{border-bottom:0;border-right:1px solid var(--line)}
+.kpis.four .kpi:last-child{border-right:0}
+.kpi-name{font-size:13px;font-weight:500;color:var(--muted)}
+.kpi-value{font-size:28px;font-weight:500;letter-spacing:-.02em;line-height:1.2;margin:6px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-value.empty{color:var(--faint)}
+.kpi-value.pos{color:var(--good)}
+.kpi-detail{font-size:12px;color:var(--faint)}
+
+.stage{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;align-items:center;gap:16px}
+.stage-name{font-size:14px;font-weight:500}
+.stage-track{height:28px;background:var(--track);border-radius:3px;overflow:hidden}
+.stage-bar{display:block;height:100%;background:var(--accent);border-radius:3px;transition:width .35s ease}
+.stage.s2 .stage-bar{opacity:.8}.stage.s3 .stage-bar{opacity:.6}
+.stage-val{text-align:right;font-size:15px;font-weight:500}
+.pass{display:grid;grid-template-columns:110px minmax(0,1fr) 110px;gap:16px;padding:8px 0}
+.pass span{grid-column:2;font-size:12px;color:var(--muted);padding-left:12px;border-left:2px solid var(--line-strong)}
+.scale-note{font-size:12px;color:var(--faint)}
+.note{margin-top:28px;padding:14px 16px;background:var(--bg);border-radius:6px;font-size:13px}
+.note b{font-weight:600}
+
+.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:620px}
+.range{display:flex;align-items:center;gap:14px;height:40px}
+.range input{flex:1;accent-color:var(--accent);height:auto;border:0;padding:0}
+.range output{min-width:44px;text-align:right;font-weight:600}
+.summary{font-size:14px;color:var(--muted)}
+.summary b{color:var(--ink);font-weight:600}
+.bullet-track{position:relative;height:14px;background:var(--track);border-radius:2px;margin:10px 0 8px}
+.bullet-bar{position:absolute;left:0;top:3px;bottom:3px;background:var(--accent);border-radius:2px;transition:width .35s ease}
+.bullet-bar.over{background:var(--warn)}
+.bullet-target{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.bullet-legend{display:flex;gap:24px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.bullet-legend b{color:var(--ink);font-weight:600}
+.findings{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.finding{display:grid;grid-template-columns:132px minmax(0,1fr);gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.status{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;color:var(--muted);height:22px}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.status.warn{color:var(--warn)}.status.warn::before{background:var(--warn)}
+.status.good{color:var(--good)}.status.good::before{background:var(--good)}
+.finding h3{font-size:14px;font-weight:600;margin:0 0 4px}
+.finding p{margin:0;font-size:13px;color:var(--muted);max-width:68ch}
+.chart{width:100%;height:auto;display:block}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .axis{fill:var(--faint);font-size:12px;font-family:inherit}
+.chart .line{fill:none;stroke:var(--accent);stroke-width:2.5}
+.chart .area{fill:var(--accent-soft)}
+.chart .base{stroke:var(--muted);stroke-width:1.25;stroke-dasharray:4 4}
+.chart .base-label{fill:var(--muted);font-size:12px;font-family:inherit}
+.chart .dot{fill:var(--surface);stroke:var(--accent);stroke-width:2.5}
+.chart .dot-label{fill:var(--ink);font-size:13px;font-weight:600;font-family:inherit}
+.empty-state{padding:28px;border:1px dashed var(--line-strong);border-radius:6px;color:var(--muted);font-size:14px}
+
+.foot{border-top:1px solid var(--line);font-size:13px;color:var(--faint)}
+.foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:28px;padding-bottom:36px}
+
+@media (max-width:1020px){
+  .hero-in{grid-template-columns:1fr;padding-top:56px;padding-bottom:72px;gap:48px}
+  .steps{grid-template-columns:1fr;padding-top:0}
+  .steps::before,.rail-fill{display:none}
+  .node{top:14px;left:14px;transform:none;width:32px;height:32px;font-size:13px}
+  .personas{grid-template-columns:1fr}
+  .phases{grid-template-columns:1fr;gap:28px}
+  .plans{grid-template-columns:1fr;gap:28px}
+  .ai{grid-template-columns:1fr;gap:32px}
+  .contact-in{grid-template-columns:1fr;gap:48px;padding-top:72px;padding-bottom:72px}
+  .persona{padding:28px 0}
+  .persona + .persona{padding-left:0;border-left:0;border-top:1px solid var(--line)}
+  .split{grid-template-columns:1fr;gap:40px}
+  .workspace{grid-template-columns:1fr}
+  .data{position:static}
+  .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .wrap{padding-left:18px;padding-right:18px}
+  .hero-in{padding-top:40px}
+  .appbar-in{gap:12px;height:auto;padding-top:12px;padding-bottom:0;flex-wrap:wrap}
+  .appbar-in .btn{margin-left:auto}
+  .menu{order:3;flex-basis:100%;overflow-x:auto;margin:0 -6px;padding-bottom:8px}
+  .menu a{white-space:nowrap}
+  .section{padding:64px 0}
+  .aud{grid-template-columns:1fr;gap:4px}
+  .fields,.controls{grid-template-columns:1fr}
+  .view{padding:24px 16px}
+  .kpis,.kpis.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpis .kpi,.kpis.four .kpi{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .kpis .kpi:nth-child(2n),.kpis.four .kpi:nth-child(2n){border-right:0}
+  .kpis .kpi:nth-last-child(-n+2),.kpis.four .kpi:nth-last-child(-n+2){border-bottom:0}
+  .kpi{padding:14px}.kpi-value{font-size:22px}
+  .stage,.pass{grid-template-columns:76px minmax(0,1fr) 72px;gap:10px}
+  .stage-name,.stage-val{font-size:13px}
+  .finding{grid-template-columns:1fr;gap:6px}
+  .pv-kpi{padding:12px 14px}.pv-kpi strong{font-size:20px}
+  .pv-row{grid-template-columns:70px minmax(0,1fr) 56px}
+}
+@media (max-width:420px){.logo-sep,.logo-product{display:none}}
+/* Amarelo de apoio */
+::selection{background:var(--lemon);color:#12223A}
+.hero h1::after{content:"";display:block;width:72px;height:6px;border-radius:3px;background:var(--lemon);margin-top:22px}
+.m-only{display:none}
+/* Celular: menos texto, só o essencial */
+@media (max-width:720px){
+  .d-only{display:none}.m-only{display:inline}
+  .hero-small,.section-head p,.step-text p,.p-a,.plan-what,.ai > div > p,.ai-points span,
+  .contact .lead,.form-card > .desc,.form-note,.dash-caption,
+  .tool-head p,.data .desc,.data .privacy,.block-head .desc,.view .note,.foot-in span:last-child{display:none}
+  .plan li:nth-child(n+4){display:none}
+  .compare .cmp-row:nth-child(5),.compare .cmp-row:nth-child(7){display:none}
+  .opps .opp:nth-child(n+2){display:none}
+  .section-head{margin-bottom:28px}
+  .step-text a{margin-top:4px}
+  .p-q{font-size:19px}
+  .persona{padding:22px 0}
+  .ai{margin-top:56px;padding-top:40px;gap:20px}
+  .ai-points{gap:14px}
+  .stance p{font-size:15px}
+}
+
+@media (max-width:720px){
+  .cmp-row{grid-template-columns:1fr 1fr}
+  .cmp-row > div{padding:14px 16px;font-size:13px}
+  .cmp-row > div:first-child{grid-column:1/-1;padding-bottom:0;border-top:1px solid var(--line)}
+  .cmp-row > div:not(:first-child){border-top:0}
+  .cmp-head > div:first-child{display:none}
+  .cmp-head > div:not(:first-child){border-top:0}
+  .stance{padding:22px}
+  .pro-note{flex-direction:column;gap:8px}
+}
+@media (max-width:720px){.wa-float{width:56px;padding:0;justify-content:center;right:16px}.wa-float span{display:none}.wa-tip{right:16px;left:16px;max-width:none}.form-card{padding:24px}}
+
+/* Cores de apoio */
+.dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:8px;vertical-align:1px;background:var(--accent)}
+.dot.teal{background:var(--teal)}.dot.violet{background:var(--violet)}
+.stage.s2 .stage-bar{background:var(--teal);opacity:1}.stage.s3 .stage-bar{background:var(--violet);opacity:1}
+.pv-row .t span{opacity:1!important}
+.pv-body > div > .pv-row:nth-child(2) .t span{background:var(--teal)}
+.pv-body > div > .pv-row:nth-child(3) .t span{background:var(--violet)}
+.rail-fill{width:calc(66.666% + 16px)!important;background:linear-gradient(90deg,var(--accent),var(--teal) 50%,var(--violet));clip-path:inset(0 100% 0 0);transition:clip-path 1.6s cubic-bezier(.4,0,.2,1) .2s!important}
+.steps.in .rail-fill{clip-path:inset(0 0 0 0)}
+.step:nth-of-type(1) .step-visual{background:var(--accent-soft)}
+.step:nth-of-type(2) .step-visual{background:var(--teal-soft)}
+.step:nth-of-type(3) .step-visual{background:var(--violet-soft)}
+.steps.in .step:nth-of-type(2) .node{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 6px var(--teal-soft)}
+.steps.in .step:nth-of-type(3) .node{background:var(--violet);border-color:var(--violet);box-shadow:0 0 0 6px var(--violet-soft)}
+.step:nth-of-type(2) .step-text a{color:var(--teal)}
+.step:nth-of-type(3) .step-text a{color:var(--violet)}
+#miniLine,#miniDot{stroke:var(--violet)}#miniArea{fill:var(--violet);fill-opacity:.14}.mini-curve .guide{stroke:var(--violet)}
+.persona:nth-child(2) .p-icon{background:var(--teal-soft);color:var(--teal)}
+.persona:nth-child(3) .p-icon{background:var(--violet-soft);color:var(--violet)}
+.persona:nth-child(2) a{color:var(--teal)}.persona:nth-child(3) a{color:var(--violet)}
+.plan{border-top:4px solid var(--teal)}
+.plan.featured{border-top-width:4px}
+.plan:nth-child(3){border-top-color:var(--violet)}
+.plan:nth-child(1) .plan-price,.plan:nth-child(1) li svg{color:var(--teal)}
+.plan:nth-child(3) .plan-price,.plan:nth-child(3) li svg{color:var(--violet)}
+.ai-points div:nth-child(2){border-left-color:var(--teal)}
+.ai-points div:nth-child(3){border-left-color:var(--violet)}
+.ai-points div:nth-child(4){border-left-color:var(--sky)}
+.cmp-head > div:last-child{background:linear-gradient(120deg,var(--navy) 55%,var(--navy-3))}
+.progress a:nth-child(2).on{background:#5ED0BF}.progress a:nth-child(3).on{background:#B3A6F2}
+.uses span[data-use="raio-x"].on{background:rgba(94,208,191,.18);border-color:rgba(94,208,191,.55)}
+.uses span[data-use="simulador"].on{background:rgba(179,166,242,.18);border-color:rgba(179,166,242,.55)}
+.chart .dot{stroke:var(--violet)}.chart .dot-label{fill:var(--violet)}
+.chart .area{fill:url(#simGrad)}
+#kpiDelta.pos,.kpi-value.pos{color:var(--good)}
+
+/* Painel ilustrativo da versão sob medida */
+.dash{margin:0 0 80px;border-radius:12px;background:var(--surface);border:1px solid var(--line);box-shadow:0 48px 90px -44px rgba(14,39,64,.5);overflow:hidden}
+.dash-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 22px;background:var(--navy);color:var(--on-navy)}
+.dash-title{display:flex;align-items:center;gap:12px;font-size:14px}
+.dash-title b{font-weight:600}
+.dash-title span{color:var(--on-navy-muted)}
+.dash-meta{display:flex;gap:8px;align-items:center;font-size:12px}
+.dash-meta span{padding:4px 10px;border-radius:4px;border:1px solid rgba(169,188,208,.3);color:var(--on-navy-muted)}
+.dash-meta span.live{border-color:rgba(94,208,191,.5);color:#BDEDE6;display:inline-flex;align-items:center;gap:6px}
+.dash-meta span.live::before{content:"";width:7px;height:7px;border-radius:50%;background:#5ED0BF;animation:blink 2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.dash-body{padding:20px;display:grid;gap:16px;background:var(--bg)}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.dk,.dcard{background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.dk{padding:16px 16px 10px;min-width:0}
+.dk-name{font-size:12px;font-weight:500;color:var(--muted)}
+.dk-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:4px 0 6px}
+.dk-val{font-size:22px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
+.delta{font-size:12px;font-weight:600;padding:2px 7px;border-radius:3px;white-space:nowrap}
+.delta.up{color:var(--good);background:var(--good-soft)}
+.delta.down{color:var(--warn);background:var(--warn-soft)}
+.spark{width:100%;height:34px;display:block}
+.spark path{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px}
+.dcard{padding:18px 18px 16px;min-width:0}
+.dcard-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.dcard h5{font-size:14px;font-weight:600;margin:0}
+.dcard small{font-size:12px;color:var(--muted)}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.dchart{width:100%;height:auto;display:block}
+.dchart .grid{stroke:var(--line)}
+.dchart .axis{fill:var(--faint);font-size:11px;font-family:inherit}
+.dchart .dbar{fill:var(--accent);transform-box:fill-box;transform-origin:bottom;transform:scaleY(0);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.dash.in .dchart .dbar{transform:scaleY(1)}
+.dchart .dline{fill:none;stroke:var(--violet);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.dchart .dpt{fill:var(--surface);stroke:var(--violet);stroke-width:2;opacity:0;transition:opacity .4s}
+.dash.in .dchart .dpt{opacity:1}
+.chan{display:grid;grid-template-columns:96px minmax(0,1fr) 44px;gap:10px;align-items:center;font-size:13px;margin-bottom:12px}
+.chan-track{position:relative;height:12px;background:var(--track);border-radius:2px}
+.chan-bar{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:var(--teal);width:0;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.chan-bar.below{background:var(--warn)}
+.chan-goal{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.chan b{text-align:right;font-weight:600}
+.chan-note{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:6px}
+.chan-note i{display:inline-block;width:2px;height:12px;background:var(--ink)}
+.opps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.opp{background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--warn);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--muted)}
+.opp.teal{border-top-color:var(--teal)}.opp.violet{border-top-color:var(--violet)}
+.opp b{display:block;font-size:12px;font-weight:600;color:var(--warn);margin-bottom:4px}
+.opp.teal b{color:var(--teal)}.opp.violet b{color:var(--violet)}
+.opp p{margin:0;color:var(--ink);font-size:13px}
+.opp.reveal{opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.dash.in .opp.reveal{opacity:1;transform:none}
+.dash-caption{font-size:12px;color:var(--faint);margin:12px 0 0}
+@media (max-width:1020px){.dash-grid{grid-template-columns:1fr}.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.opps{grid-template-columns:1fr}}
+@media (max-width:520px){.dash-body{padding:12px;gap:12px}.dash-kpis{gap:10px}.dk-val{font-size:18px}.dk-row{flex-direction:column;align-items:flex-start;gap:4px}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.3)}100%{transform:scale(1)}}
+.enter-item{animation:rise .55s cubic-bezier(.2,.7,.2,1) both}
+.tool-head-in.enter > div:first-child > *{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+.tool-head-in.enter > div:first-child > :nth-child(2){animation-delay:.07s}
+.tool-head-in.enter > div:first-child > :nth-child(3){animation-delay:.14s}
+.chart.enter .area{animation:fade .8s ease .5s both}
+.chart.enter .dot{transform-box:fill-box;transform-origin:center;animation:pop .45s ease-out 1.1s both}
+.chart.enter .dot-label,.chart.enter .base,.chart.enter .base-label{animation:fade .5s ease 1.2s both}
+.mini-curve .guide{stroke:var(--accent);stroke-width:1;stroke-dasharray:2 3;opacity:.6}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* Celular: blocos lado a lado, deslizando */
+.car-dots{display:none}
+@media (max-width:720px){
+  .plans,.steps,.personas,.opps{display:flex!important;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-left:-18px;margin-right:-18px;padding:18px 18px 6px;scroll-padding-left:18px}
+  .plans::-webkit-scrollbar,.steps::-webkit-scrollbar,.personas::-webkit-scrollbar,.opps::-webkit-scrollbar{display:none}
+  .plans > *,.steps > article,.personas > *,.opps > *{flex:0 0 82%;scroll-snap-align:start;min-width:0}
+  .opps{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px;scroll-padding-left:12px}
+  .opps > *{flex-basis:78%}
+  .opps .opp:nth-child(n+2){display:block}
+  .steps{padding-top:18px}
+  .step-visual{height:196px;padding-top:56px}
+  .persona,.persona + .persona{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;border-top:1px solid var(--line)}
+  .personas-band .persona{background:var(--bg)}
+  .car-dots{display:flex;justify-content:center;gap:6px;margin-top:14px}
+  .car-dots i{width:7px;height:7px;border-radius:4px;background:var(--line-strong);transition:width .25s,background .25s}
+  .car-dots i.on{width:20px;background:var(--accent)}
+}
+
+/* Celular: barra de resultado ao vivo e painel mais limpo */
+.live{display:none}
+@keyframes flash{0%{background:rgba(244,242,122,.35)}100%{background:transparent}}
+@media (max-width:720px){
+  .live{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--hdr));z-index:30;background:var(--navy-2);color:var(--on-navy);border-bottom:1px solid rgba(169,188,208,.18);box-shadow:0 10px 20px -14px rgba(5,18,32,.6)}
+  .live-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 36px;gap:8px;align-items:center;padding-top:10px;padding-bottom:10px}
+  .live-cell{min-width:0}
+  .live-cell small{display:block;font-size:11px;color:var(--on-navy-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .live-cell b{display:inline-block;font-size:17px;font-weight:600;border-radius:3px;padding:0 3px;margin-left:-3px;white-space:nowrap}
+  .live-cell b.flash{animation:flash .7s ease-out}
+  .live-go{width:36px;height:36px;border-radius:50%;border:1px solid rgba(169,188,208,.35);background:none;color:var(--on-navy);display:grid;place-items:center;cursor:pointer}
+  .tool-head-in{padding-top:24px;padding-bottom:24px}
+  .tool-head h1{font-size:26px;margin:0}
+  .progress{display:none}
+  .tool-body{padding-top:16px}
+  .data{padding:18px}
+  .data .fields{grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+  .data .field label{font-size:12px}
+  .data .field input{height:40px;font-size:15px;padding:0 10px}
+  .data .uses{display:none}
+  .data .ghost{margin-top:14px}
+  /* Painel ilustrativo */
+  .dash-meta span:first-child{display:none}
+  .dash-kpis{grid-template-columns:1fr 1fr;gap:8px}
+  .dk{padding:12px 12px 6px}
+  .dk-name{font-size:11px}
+  .dk-row{flex-direction:column;align-items:flex-start;gap:4px;margin:2px 0 4px}
+  .dk-val{font-size:16px}
+  .delta{font-size:11px;padding:1px 6px}
+  .spark{height:24px}
+  .dchart .axis{font-size:12px}
+  .dcard{padding:14px}
+  .dcard-head{margin-bottom:8px}
+  .legend{font-size:11px;gap:10px}
+  .chan{grid-template-columns:86px minmax(0,1fr) 38px;font-size:12px;gap:8px}
+  .dash-bar{padding:12px 14px}
+}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="wrap appbar-in">
+    <a class="logo" href="#inicio" aria-label="RUDNIK | Métrica Lab, página inicial">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <rect x=".75" y=".75" width="24.5" height="24.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="6" y="14" width="3" height="6" fill="currentColor"/><rect x="11.5" y="10" width="3" height="10" fill="currentColor"/><rect x="17" y="6" width="3" height="14" fill="currentColor"/>
+      </svg>
+      <span class="logo-name">RUDNIK</span><span class="logo-sep" aria-hidden="true"></span><span class="logo-product">Métrica Lab</span>
+    </a>
+    <nav class="menu" aria-label="Páginas">
+      <a href="#inicio" data-route="inicio">Início</a>
+      <a href="#calculadora" data-route="calculadora">Calculadora</a>
+      <a href="#raio-x" data-route="raio-x">Raio-X</a>
+      <a href="#simulador" data-route="simulador">Simulador</a>
+      <a href="#sob-medida" data-route="sob-medida">Sob medida</a>
+    </nav>
+    <a class="btn btn-primary btn-sm" href="#contato">Solicitar diagnóstico</a>
+  </div>
+</header>
+
+<!-- ========== INÍCIO ========== -->
+<div id="page-inicio" class="page">
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div>
+        <h1>Seus números precisam gerar decisões.</h1>
+        <p class="hero-lead"><span class="d-only">Análise de desempenho, diagnóstico e inteligência de dados para quem decide o investimento em marketing. Teste o método grátis na demonstração e leve para a sua empresa uma versão montada sob medida para a sua operação.</span><span class="m-only">Análise, diagnóstico e simuladores para decidir o seu investimento em marketing.</span></p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#calculadora">Testar a demonstração</a>
+          <a class="btn btn-line" href="#sob-medida" id="howLink">Conhecer a versão sob medida</a>
+        </div>
+        <p class="hero-small">A demonstração é gratuita e não pede cadastro.</p>
+      </div>
+
+      <div class="preview" aria-label="Exemplo de análise de campanha" role="img">
+        <div class="pv-top"><b>Campanha de leads, outubro</b><span>Exemplo</span></div>
+        <div class="pv-kpis">
+          <div class="pv-kpi"><small><i class="dot"></i>CPL</small><strong data-count="25" data-fmt="brl">R$ 25,00</strong></div>
+          <div class="pv-kpi"><small><i class="dot teal"></i>CTR</small><strong data-count="4" data-fmt="pct">4%</strong></div>
+          <div class="pv-kpi"><small><i class="dot violet"></i>ROAS</small><strong data-count="3.6" data-fmt="x">3,6x</strong></div>
+        </div>
+        <div class="pv-body">
+          <div class="pv-label">Funil da campanha</div>
+          <div>
+            <div class="pv-row"><span>Impressões</span><div class="t"><span data-w="100"></span></div><span class="v">250.000</span></div>
+            <div class="pv-row"><span>Cliques</span><div class="t"><span data-w="74"></span></div><span class="v">10.000</span></div>
+            <div class="pv-row"><span>Leads</span><div class="t"><span data-w="43"></span></div><span class="v">200</span></div>
+          </div>
+          <div class="pv-alert"><i></i><div><b>CPL 25% acima da meta.</b> Só 2% dos cliques viram lead: revise página de destino e formulário antes de subir a verba.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Do dado bruto à decisão em três passos</h2>
+        <p>Este é o método do Métrica Lab. Na demonstração, você aplica nos números que digitar. Na versão sob medida, ele roda com os dados reais da sua operação.</p>
+      </div>
+      <div class="steps">
+        <span class="rail-fill" aria-hidden="true"></span>
+        <article class="step"><div class="node">1</div>
+          <div class="step-visual"><div class="mini-kpis"><div><small>CPM</small><b data-mini="20" data-fmt="brl">R$ 20,00</b></div><div><small>CPC</small><b data-mini="0.5" data-fmt="brl">R$ 0,50</b></div><div><small>ROI</small><b data-mini="260" data-fmt="int%">260%</b></div></div></div>
+          <div class="step-text"><h3>Calcule</h3><p>Informe os números da campanha e veja CPM, CTR, CPC, CPL, ROAS e ROI na hora, com o funil desenhado.</p><a href="#calculadora">Abrir a calculadora</a></div>
+        </article>
+        <article class="step"><div class="node">2</div>
+          <div class="step-visual"><div class="mini-list"><div class="w"><i></i>CPL acima da meta</div><div><i></i>Conversão de clique em lead de 2%</div><div class="g"><i></i>CTR dentro do esperado</div></div></div>
+          <div class="step-text"><h3>Diagnostique</h3><p>O Raio-X cruza o funil com o seu objetivo e aponta onde investigar primeiro, com prioridade clara.</p><a href="#raio-x">Abrir o Raio-X</a></div>
+        </article>
+        <article class="step"><div class="node">3</div>
+          <div class="step-visual"><svg class="mini-curve" viewBox="0 0 240 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><line x1="0" y1="70" x2="240" y2="70" stroke="var(--line-strong)" stroke-dasharray="4 4"/><path id="miniArea" d="M0,70 C80,66 150,55 240,22 L240,100 L0,100Z" fill="var(--accent-soft)"/><line id="miniGuide" class="guide" x1="168" x2="168" y1="50" y2="100"/><path id="miniLine" d="M0,70 C80,66 150,55 240,22" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round"/><circle id="miniDot" cx="168" cy="50" r="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="2.5"/></svg></div>
+          <div class="step-text"><h3>Projete</h3><p>Simule novo investimento e ganho de eficiência e veja quantos leads esperar antes de mexer no orçamento.</p><a href="#simulador">Abrir o simulador</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section personas-band">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Feito para quem responde pelo orçamento de mídia</h2>
+        <p>Cada perfil chega com uma pergunta diferente. O Métrica Lab responde com número, diagnóstico e cenário.</p>
+      </div>
+      <div class="personas">
+        <article class="persona">
+          <div class="p-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h18l-7 8v6l-4 2v-8z"/></svg></div>
+          <p class="p-role">Gestores de tráfego</p>
+          <p class="p-q">“Onde está o gargalo antes de eu pedir mais verba?”</p>
+          <p class="p-a">O Raio-X mostra em que etapa do funil a campanha perde eficiência.</p>
+          <a href="#raio-x">Abrir o Raio-X</a>
+        </article>
+        <article class="persona">
+          <div class="p-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4M7 12l3-3 2 2 4-4"/></svg></div>
+          <p class="p-role">Agências</p>
+          <p class="p-q">“Como mostro ao cliente, com clareza, se a campanha está funcionando?”</p>
+          <p class="p-a">Indicadores e funil no mesmo padrão para todas as campanhas da carteira.</p>
+          <a href="#calculadora">Abrir a calculadora</a>
+        </article>
+        <article class="persona">
+          <div class="p-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/><path d="M15 6h4v4"/></svg></div>
+          <p class="p-role">Times de marketing</p>
+          <p class="p-q">“Quantos leads a mais eu ganho se aumentar o orçamento?”</p>
+          <p class="p-a">O simulador projeta o volume antes de qualquer mudança na verba.</p>
+          <a href="#simulador">Abrir o simulador</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section offer" id="sob-medida">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>A demonstração mostra o método. A versão sob medida aplica no seu negócio.</h2>
+        <p>Cada operação tem metas, canais e gargalos próprios. Por isso, a versão paga é montada a partir do seu negócio: painéis, diagnósticos e simuladores feitos para as decisões que você precisa tomar.</p>
+      </div>
+      <figure class="dash" id="dash" aria-label="Exemplo ilustrativo de painel sob medida">
+        <div class="dash-bar">
+          <div class="dash-title"><svg width="20" height="20" viewBox="0 0 26 26" aria-hidden="true"><rect x=".75" y=".75" width="24.5" height="24.5" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="6" y="14" width="3" height="6" fill="currentColor"/><rect x="11.5" y="10" width="3" height="10" fill="currentColor"/><rect x="17" y="6" width="3" height="14" fill="currentColor"/></svg><b>Painel de resultados</b><span>Loja Exemplo</span></div>
+          <div class="dash-meta"><span>Últimos 6 meses</span><span class="live">Dados atualizados</span></div>
+        </div>
+        <div class="dash-body">
+          <div class="dash-kpis">
+            <div class="dk"><div class="dk-name"><i class="dot"></i>Investimento</div><div class="dk-row"><span class="dk-val" data-dv="48200" data-f="brl">R$ 48.200,00</span><span class="delta up">+7%</span></div><svg class="spark" viewBox="0 0 120 34" preserveAspectRatio="none" data-spark="38,40,41,44,45,48" data-c="accent"></svg></div>
+            <div class="dk"><div class="dk-name"><i class="dot violet"></i>Receita atribuída</div><div class="dk-row"><span class="dk-val" data-dv="212400" data-f="brl">R$ 212.400,00</span><span class="delta up">+14%</span></div><svg class="spark" viewBox="0 0 120 34" preserveAspectRatio="none" data-spark="142,151,160,178,186,212" data-c="violet"></svg></div>
+            <div class="dk"><div class="dk-name"><i class="dot teal"></i>ROAS</div><div class="dk-row"><span class="dk-val" data-dv="4.4" data-f="x">4,4x</span><span class="delta up">+0,3x</span></div><svg class="spark" viewBox="0 0 120 34" preserveAspectRatio="none" data-spark="3.7,3.8,3.9,4,4.1,4.4" data-c="teal"></svg></div>
+            <div class="dk"><div class="dk-name"><i class="dot teal"></i>Custo por cliente</div><div class="dk-row"><span class="dk-val" data-dv="186" data-f="brl">R$ 186,00</span><span class="delta up">−6%</span></div><svg class="spark" viewBox="0 0 120 34" preserveAspectRatio="none" data-spark="214,209,205,198,197,186" data-c="teal"></svg></div>
+          </div>
+          <div class="dash-grid">
+            <div class="dcard">
+              <div class="dcard-head"><div><h5>Investimento e receita por mês</h5><small>Todos os canais</small></div><div class="legend"><span><i style="background:var(--accent)"></i>Investimento</span><span><i style="background:var(--violet)"></i>Receita</span></div></div>
+              <svg class="dchart" id="dashChart" viewBox="0 0 640 240" role="img" aria-label="Receita cresce de R$ 142 mil para R$ 212 mil em seis meses, com investimento de R$ 38 mil a R$ 48 mil"></svg>
+            </div>
+            <div class="dcard">
+              <div class="dcard-head"><div><h5>ROAS por canal</h5><small>Comparado com a meta do negócio</small></div></div>
+              <div id="chans"></div>
+              <div class="chan-note"><i></i>Meta de ROAS: 4,0x</div>
+            </div>
+          </div>
+          <div class="opps">
+            <div class="opp reveal"><b>Atenção</b><p>Redes sociais com ROAS de 2,9x, abaixo da meta. Revisar públicos de remarketing.</p></div>
+            <div class="opp teal reveal"><b>Oportunidade</b><p>Marketplaces com ROAS de 6,1x e espaço para receber mais R$ 8.000,00 por mês.</p></div>
+            <div class="opp violet reveal"><b>Simulação</b><p>Mover 10% da verba de redes sociais para marketplaces pode somar R$ 18.000,00 em receita.</p></div>
+          </div>
+        </div>
+        <figcaption class="dash-caption" style="padding:0 22px 16px;background:var(--bg);margin:0">Exemplo ilustrativo com dados fictícios. Cada painel é montado com os indicadores, canais e metas da sua operação.</figcaption>
+      </figure>
+      <div class="compare" role="table" aria-label="Comparativo entre a demonstração e a versão sob medida">
+          <div class="cmp-row cmp-head"><div></div><div><b>Demonstração</b><small>Gratuita, para conhecer o método</small></div><div><b>Sob medida</b><small>Montada para a sua operação</small></div></div>
+          <div class="cmp-row"><div>Dados</div><div>Digitados à mão, uma campanha por vez</div><div>Conectados às suas fontes e atualizados com frequência</div></div>
+          <div class="cmp-row"><div>Indicadores</div><div>Os seis indicadores clássicos de mídia</div><div>Painéis com os indicadores que importam para a sua operação</div></div>
+          <div class="cmp-row"><div>Diagnóstico</div><div>Regras gerais de funil</div><div>Comparação com suas metas, seu histórico e referências do seu segmento</div></div>
+          <div class="cmp-row"><div>Recorte</div><div>Uma campanha isolada</div><div>Por canal, campanha, região, produto e período</div></div>
+          <div class="cmp-row"><div>Simulação</div><div>Investimento e custo por lead</div><div>Cenários de orçamento, mix de canais e metas de receita</div></div>
+          <div class="cmp-row"><div>Análise</div><div>Você interpreta sozinho</div><div>Leitura de resultados e oportunidades com um especialista</div></div>
+      </div>
+      <h3 class="offer-sub">Como contratar</h3>
+      <p class="desc">Comece grátis, valide com um diagnóstico e evolua para o acompanhamento quando fizer sentido.</p>
+      <div class="plans">
+        <article class="plan">
+          <p class="plan-for">Para conhecer</p>
+          <h4>Demonstração</h4>
+          <p class="plan-price">Gratuita</p>
+          <p class="plan-what">O método aplicado aos números que você digitar.</p>
+          <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Calculadora de indicadores e funil</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Raio-X com pontos de atenção</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Simulador de investimento e custo por lead</span></li></ul>
+          <a class="btn btn-outline" href="#calculadora">Testar a demonstração</a>
+        </article>
+        <article class="plan featured">
+          <span class="plan-flag">Comece por aqui</span>
+          <p class="plan-for">Para começar</p>
+          <h4>Diagnóstico</h4>
+          <p class="plan-price">Investimento único</p>
+          <p class="plan-what">Um raio-x completo da sua operação com os seus dados reais.</p>
+          <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Organização e checagem dos seus dados de mídia, CRM e vendas</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Raio-X do funil por canal e campanha</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Recomendações priorizadas pelo impacto</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Entrega no Métrica Lab, com os seus números</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Reunião de apresentação com um especialista</span></li></ul>
+          <a class="btn btn-solid" href="#contato">Quero meu diagnóstico</a>
+        </article>
+        <article class="plan">
+          <p class="plan-for">Para evoluir</p>
+          <h4>Acompanhamento</h4>
+          <p class="plan-price">Mensal, sob consulta</p>
+          <p class="plan-what">O painel sob medida da sua operação, sempre atualizado.</p>
+          <ul><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Painel com os indicadores do seu negócio</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Análise mensal de resultados e oportunidades</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Simuladores de orçamento, mix de canais e metas</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Histórico e metas sempre à mão</span></li><li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Valor do diagnóstico abatido se contratar em até 30 dias</span></li></ul>
+          <a class="btn btn-outline" href="#contato">Falar sobre o acompanhamento</a>
+        </article>
+      </div>
+      <div class="stance">
+        <p><b>Não operamos a sua mídia.</b> Somos a camada de análise e inteligência que ajuda você, sua agência ou seu time interno a decidir melhor onde e quanto investir.</p>
+        <a class="btn btn-solid" href="#contato">Quero meu diagnóstico</a>
+      </div>
+      <div class="ai">
+        <div>
+          <h3>E por que não perguntar direto para uma IA?</h3>
+          <p>Pode perguntar, e nós também usamos IA no processo. A diferença está no que vem antes e depois da resposta.</p>
+        </div>
+        <div class="ai-points">
+          <div><b>Dados que fazem sentido</b><span>A IA analisa o que recebe. Nós juntamos mídia, CRM e vendas e checamos se os números batem antes de qualquer conclusão.</span></div>
+          <div><b>As perguntas certas</b><span>A IA responde o que você pergunta. O método define onde olhar: custo, conversão, qualidade do lead ou atribuição.</span></div>
+          <div><b>Continuidade</b><span>Metas, histórico e contexto do seu negócio, mês a mês, para comparar e perceber quando algo sai do padrão.</span></div>
+          <div><b>Alguém responde pela recomendação</b><span>Você leva para a reunião de orçamento uma análise assinada por um especialista, não um texto gerado.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band contact" id="contato">
+    <div class="wrap contact-in">
+      <div>
+        <h2>Gostou da demonstração? Comece pelo diagnóstico da sua operação.</h2>
+        <p class="lead">Você envia os dados, nós organizamos, analisamos e entregamos o raio-x completo da sua operação no Métrica Lab, com recomendações priorizadas.</p>
+        <ul class="gets">
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.3l2.7 2.7L16 9.6"/></svg><span>Raio-X completo com os seus dados reais</span></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.3l2.7 2.7L16 9.6"/></svg><span>Recomendações priorizadas e reunião de apresentação</span></li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.3l2.7 2.7L16 9.6"/></svg><span>Valor abatido se seguir para o acompanhamento</span></li>
+        </ul>
+      </div>
+      <form class="form-card" id="contactForm" novalidate>
+        <h3>Solicitar diagnóstico</h3>
+        <p class="desc">Leva um minuto. A conversa continua no WhatsApp.</p>
+        <div class="fields">
+          <div class="field"><label for="cName">Seu nome</label><input id="cName" type="text" autocomplete="name" placeholder="Como devemos chamar você"><p class="err" id="cNameErr" hidden>Informe seu nome para o especialista saber com quem vai falar.</p></div>
+          <div class="field"><label for="cCompany">Empresa <span class="opt">opcional</span></label><input id="cCompany" type="text" autocomplete="organization" placeholder="Nome da empresa"></div>
+          <div class="field"><label for="cBudget">Investimento mensal em mídia</label><select id="cBudget"><option>Até R$ 5.000,00</option><option selected>De R$ 5.000,00 a R$ 20.000,00</option><option>De R$ 20.000,00 a R$ 100.000,00</option><option>Acima de R$ 100.000,00</option></select></div>
+          <div class="field"><label for="cWho">Quem cuida da mídia hoje?</label><select id="cWho"><option>Time interno</option><option>Agência</option><option>Time interno e agência</option><option>Ainda não investimos em mídia</option></select></div>
+          <div class="field"><label for="cGoal">Principal objetivo</label><select id="cGoal"><option>Gerar leads</option><option>Vender online</option><option>Gerar tráfego</option><option>Ainda estou definindo</option></select></div>
+        </div>
+        <label class="check"><input type="checkbox" id="cDemo" checked><span>Enviar junto os números que usei na demonstração</span></label>
+        <button class="btn btn-wa" type="submit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.5-4.9a8.5 8.5 0 1 1 16-4.1z"/><path d="M9 10.5h6M9 13.5h4"/></svg>Conversar pelo WhatsApp</button>
+        <p class="form-note">Abre o WhatsApp com a mensagem pronta. Nada é enviado sem a sua confirmação.</p>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- ========== FERRAMENTAS ========== -->
+<div id="page-tools" class="page" hidden>
+  <section class="tool-head">
+    <div class="wrap tool-head-in">
+      <div>
+        <div class="crumb" id="toolCrumb">Demonstração gratuita, passo 1 de 3</div>
+        <h1 id="toolTitle">Calculadora de campanhas</h1>
+        <p id="toolLead"></p>
+      </div>
+      <nav class="progress" aria-label="Passos">
+        <a href="#calculadora" data-step="calculadora" aria-label="Calculadora"></a>
+        <a href="#raio-x" data-step="raio-x" aria-label="Raio-X"></a>
+        <a href="#simulador" data-step="simulador" aria-label="Simulador"></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="live" id="live" role="status" aria-live="polite">
+    <div class="wrap live-in">
+      <div class="live-cell"><small id="lvL1">CPL</small><b id="lvV1">—</b></div>
+      <div class="live-cell"><small id="lvL2">CTR</small><b id="lvV2">—</b></div>
+      <div class="live-cell"><small id="lvL3">ROAS</small><b id="lvV3">—</b></div>
+      <button class="live-go" id="liveGo" type="button" aria-label="Ver análise completa"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
+  </div>
+  <div class="wrap tool-body">
+    <div class="workspace">
+      <aside class="panel data" aria-labelledby="dataTitle">
+        <h2 id="dataTitle">Dados da campanha</h2>
+        <p class="desc">Informe os números reais da campanha, todos do mesmo período. Eles valem para as três ferramentas.</p>
+        <div class="uses" aria-label="Usado em"><span data-use="calculadora">Calculadora</span><span data-use="raio-x">Raio-X</span><span data-use="simulador">Simulador</span></div>
+        <div class="fields">
+          <div class="field"><label for="spend">Investimento realizado</label><input id="spend" type="text" inputmode="numeric" autocomplete="off" data-kind="money" value="R$ 5.000,00" placeholder="R$ 0,00"></div>
+          <div class="field"><label for="impr">Impressões</label><input id="impr" type="text" inputmode="numeric" autocomplete="off" data-kind="count" value="250.000" placeholder="0"></div>
+          <div class="field"><label for="clicks">Cliques</label><input id="clicks" type="text" inputmode="numeric" autocomplete="off" data-kind="count" value="10.000" placeholder="0"></div>
+          <div class="field"><label for="leads">Leads ou conversões</label><input id="leads" type="text" inputmode="numeric" autocomplete="off" data-kind="count" value="200" placeholder="0"></div>
+          <div class="field"><label for="revenue">Receita atribuída <span class="opt">opcional</span></label><input id="revenue" type="text" inputmode="numeric" autocomplete="off" data-kind="money" value="R$ 18.000,00" placeholder="R$ 0,00"></div>
+        </div>
+        <button class="ghost" id="resetBtn" type="button">Restaurar exemplo</button>
+        <p class="privacy">Use dados fictícios ou agregados. Não insira informações pessoais ou confidenciais.</p>
+      </aside>
+
+      <section class="panel">
+        <!-- Calculadora -->
+        <div class="view" id="view-calculadora">
+          <div class="block">
+            <div class="block-head"><div><h2>Indicadores da campanha</h2><p class="desc">Calculados a partir dos dados informados.</p></div></div>
+            <div class="kpis" id="metrics"></div>
+          </div>
+          <div class="block">
+            <div class="block-head"><div><h2>Funil da campanha</h2><p class="desc">Quanto do volume avança de uma etapa para a próxima.</p></div><span class="scale-note">Escala logarítmica</span></div>
+            <div id="funnel"></div>
+            <div class="note"><b>Como interpretar.</b> Um indicador isolado não define o sucesso. Compare com a meta, o histórico, o canal, o segmento e a qualidade dos resultados.</div>
+          </div>
+          <div class="pro-note"><span class="tag">Na versão sob medida</span><span>Os indicadores vêm direto das suas fontes de dados e aparecem por canal, campanha, região e período. <a href="#sob-medida">Ver o que muda</a></span></div>
+          <div class="next"><p><b>Próximo passo:</b> descubra onde está o gargalo.</p><a class="btn btn-solid btn-sm" href="#raio-x">Gerar o Raio-X</a></div>
+        </div>
+
+        <!-- Raio-X -->
+        <div class="view" id="view-raio-x" hidden>
+          <div class="block">
+            <div class="block-head"><div><h2>Objetivo e meta</h2><p class="desc">Com a meta de CPL, o Raio-X classifica o custo em vez de só mostrá-lo.</p></div></div>
+            <div class="controls">
+              <div class="field"><label for="goal">Objetivo principal</label><select id="goal"><option value="leads">Gerar leads</option><option value="traffic">Gerar tráfego</option><option value="sales">Gerar vendas e receita</option></select></div>
+              <div class="field"><label for="target">Meta de CPL <span class="opt">opcional</span></label><input id="target" type="text" inputmode="numeric" autocomplete="off" data-kind="money" value="R$ 20,00" placeholder="R$ 0,00"></div>
+            </div>
+          </div>
+          <div class="block" id="bulletBlock" hidden>
+            <div class="block-head"><div><h2>CPL em relação à meta</h2></div></div>
+            <div id="bullet"></div>
+          </div>
+          <div class="block">
+            <div class="block-head"><div><h2>Leitura dos resultados</h2></div><span class="summary" id="summary"></span></div>
+            <ul class="findings" id="diagnosis"></ul>
+          </div>
+          <div class="pro-note"><span class="tag">Na versão sob medida</span><span>O diagnóstico compara seus números com as suas metas, o seu histórico e referências do seu segmento. <a href="#sob-medida">Ver o que muda</a></span></div>
+          <div class="next"><p><b>Próximo passo:</b> veja o que muda com mais verba e mais eficiência.</p><a class="btn btn-solid btn-sm" href="#simulador">Simular cenário</a></div>
+        </div>
+
+        <!-- Simulador -->
+        <div class="view" id="view-simulador" hidden>
+          <div class="block">
+            <div class="block-head"><div><h2>Cenário</h2><p class="desc">Parte do CPL atual da campanha.</p></div></div>
+            <div class="controls">
+              <div class="field"><label for="newSpend">Investimento planejado</label><input id="newSpend" type="text" inputmode="numeric" autocomplete="off" data-kind="money" value="R$ 7.000,00" placeholder="R$ 0,00"></div>
+              <div class="field"><label for="improve">Quanto o lead fica mais barato</label><div class="range"><input id="improve" type="range" min="0" max="50" step="1" value="10"><output id="improveVal" for="improve">10%</output></div></div>
+            </div>
+          </div>
+          <div class="block">
+            <div class="kpis four">
+              <div class="kpi"><div class="kpi-name"><i class="dot"></i>Leads com o CPL atual</div><div class="kpi-value" id="baseLeads">—</div><div class="kpi-detail" id="baseDetail">Mesmo CPL, novo investimento</div></div>
+              <div class="kpi"><div class="kpi-name"><i class="dot violet"></i>Leads projetados</div><div class="kpi-value" id="projectedLeads">—</div><div class="kpi-detail">Com o lead mais barato</div></div>
+              <div class="kpi"><div class="kpi-name"><i class="dot teal"></i>CPL projetado</div><div class="kpi-value" id="projectedCpl">—</div><div class="kpi-detail" id="cplFrom">—</div></div>
+              <div class="kpi"><div class="kpi-name">Variação de leads</div><div class="kpi-value" id="deltaLeads">—</div><div class="kpi-detail">Projetado contra CPL atual</div></div>
+            </div>
+          </div>
+          <div class="block">
+            <div class="block-head"><div><h2>Leads projetados conforme o lead fica mais barato</h2><p class="desc">Para o investimento planejado informado acima.</p></div></div>
+            <div id="simChart"></div>
+            <div class="note"><b>Leia com cautela.</b> É uma estimativa matemática, não uma promessa de desempenho. Ao escalar o investimento, leilão, público, frequência e qualidade dos leads podem mudar.</div>
+          </div>
+          <div class="pro-note"><span class="tag">Na versão sob medida</span><span>Você simula orçamento por período, mix de canais e metas de receita, a partir dos dados reais. <a href="#sob-medida">Ver o que muda</a></span></div>
+          <div class="next"><p><b>Quer esse método aplicado ao seu negócio?</b> Comece pelo diagnóstico com os seus dados reais.</p><a class="btn btn-solid btn-sm" href="#contato">Solicitar diagnóstico</a></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Falar com um especialista pelo WhatsApp"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3 20.5l1.5-4.9a8.5 8.5 0 1 1 16-4.1z"/><path d="M9 10.5h6M9 13.5h4"/></svg><span>Fale com a gente</span></a>
+<div class="wa-tip" id="waTip" role="status" hidden><b>Ficou com alguma dúvida?</b>Um especialista responde pelo WhatsApp.<button type="button" id="waTipClose" aria-label="Fechar">×</button></div>
+
+<footer class="foot">
+  <div class="wrap foot-in"><span>@RUDNIK | Métrica Lab</span><span>Demonstração gratuita. A versão personalizada é montada para cada operação.</span></div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const digits = v => (v||'').replace(/\D/g,'');
+const num = id => {const el=$(id),k=el.dataset.kind;if(!k)return Math.max(0,Number(el.value)||0);const d=digits(el.value);return d?(k==='money'?Number(d)/100:Number(d)):0};
+const show = (k,n) => k==='money' ? n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) : Math.round(n).toLocaleString('pt-BR');
+const setVal = (id,v) => {const el=$(id);el.value = v===''||v==null ? '' : show(el.dataset.kind,v)};
+function mask(e){const el=e.target,d=digits(el.value).replace(/^0+(?=\d)/,'').slice(0,12);
+  el.value = d ? show(el.dataset.kind, el.dataset.kind==='money'?Number(d)/100:Number(d)) : '';}
+const brl = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const fmt = (n,d=2) => n.toLocaleString('pt-BR',{maximumFractionDigits:d});
+const int = n => Math.round(n).toLocaleString('pt-BR');
+const F = {pct1:n=>fmt(n,1)+'%', brl, brl0:n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}), pct:n=>fmt(n)+'%', 'int%':n=>int(n)+'%', x:n=>fmt(n,1)+'x', int, spct:n=>(n>=0?'+':'')+fmt(n)+'%'};
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const data = () => ({spend:num('spend'),impr:num('impr'),clicks:num('clicks'),leads:num('leads'),revenue:num('revenue')});
+
+function calc(){
+  const d = data();
+  const m = [
+    ['CPM','', d.impr ? d.spend/d.impr*1000 : null, 'brl', 'Custo por mil impressões'],
+    ['CTR','teal', d.impr ? d.clicks/d.impr*100 : null, 'pct', 'Cliques ÷ impressões'],
+    ['CPC','', d.clicks ? d.spend/d.clicks : null, 'brl', 'Custo por clique'],
+    ['CPL','', d.leads ? d.spend/d.leads : null, 'brl', 'Custo por lead'],
+    ['ROAS','violet', d.spend && d.revenue ? d.revenue/d.spend : null, 'x', d.revenue ? 'Receita ÷ investimento' : 'Informe a receita para calcular'],
+    ['ROI','violet', d.spend && d.revenue ? (d.revenue-d.spend)/d.spend*100 : null, 'pct', d.revenue ? '(Receita − investimento) ÷ investimento' : 'Informe a receita para calcular']
+  ];
+  $('metrics').innerHTML = m.map(([n,c,v,f,t]) => v===null
+    ? `<div class="kpi"><div class="kpi-name"><i class="dot ${c}"></i>${n}</div><div class="kpi-value empty">—</div><div class="kpi-detail">${t}</div></div>`
+    : `<div class="kpi"><div class="kpi-name"><i class="dot ${c}"></i>${n}</div><div class="kpi-value" data-v="${v}" data-f="${f}">${F[f](v)}</div><div class="kpi-detail">${t}</div></div>`).join('');
+  const st = [['Impressões',d.impr],['Cliques',d.clicks],['Leads',d.leads]];
+  const top = Math.max(...st.map(s=>s[1]),1);
+  const w = v => v<=0 ? 0 : top<=1 ? 100 : Math.max(1.5, Math.log10(Math.max(v,1))/Math.log10(top)*100);
+  const rate = (a,b,l) => b ? `${fmt(a/b*100)}% ${l}` : 'Sem volume na etapa anterior';
+  const stage = ([n,v],i) => `<div class="stage s${i}"><div class="stage-name">${n}</div><div class="stage-track"><span class="stage-bar" style="width:${w(v)}%"></span></div><div class="stage-val">${int(v)}</div></div>`;
+  $('funnel').innerHTML = stage(st[0],1)+`<div class="pass"><span>${rate(d.clicks,d.impr,'das impressões geraram clique')}</span></div>`+stage(st[1],2)+`<div class="pass"><span>${rate(d.leads,d.clicks,'dos cliques viraram lead')}</span></div>`+stage(st[2],3);
+}
+
+function diagnose(){
+  const d = data(), goal = $('goal').value, target = num('target'), out = [];
+  if(!d.spend) out.push(['warn','Informe o investimento','Adicione o valor investido para calcular custos e eficiência.']);
+  if(d.impr && d.clicks > d.impr) out.push(['warn','Revise os dados de volume','O número de cliques está maior que o de impressões. Confira se os períodos e as fontes são os mesmos.']);
+  if(d.clicks && d.leads > d.clicks) out.push(['warn','Revise a definição de conversão','Os leads estão acima dos cliques. Isso pode acontecer em algumas configurações de atribuição, mas vale confirmar a origem e a janela de conversão.']);
+  if(d.impr && d.clicks <= d.impr) out.push(['info','Taxa de cliques de '+fmt(d.clicks/d.impr*100)+'%','Avalie se o anúncio, a segmentação e a mensagem atraem o público certo. Compare o CTR com campanhas do mesmo canal e objetivo.']);
+  if(d.clicks && goal==='leads'){const r=d.leads/d.clicks*100;out.push([r===0?'warn':'info','Conversão de clique para lead de '+fmt(r)+'%','Se há volume de cliques mas poucos viram leads, investigue página de destino, formulário, velocidade, oferta e aderência entre anúncio e página.'])}
+  const cpl = d.leads ? d.spend/d.leads : 0;
+  if(d.leads){
+    if(target){const gap=(cpl-target)/target*100;out.push(gap>0?['warn','CPL '+fmt(gap,1)+'% acima da meta','Investigue custo de mídia e taxa de conversão antes de aumentar o orçamento.']:['good','CPL dentro da meta','O CPL está igual ou abaixo da meta. Verifique também a qualidade dos leads e o avanço deles no funil.'])}
+    else out.push(['info','CPL atual de '+brl(cpl),'Sem uma meta ou referência comparável, não é possível classificar esse custo. Defina um CPL máximo aceitável com base na economia do negócio.']);
+  } else if(goal==='leads') out.push(['warn','Nenhum lead informado','Confira se o rastreamento de conversões funciona e se o formulário está recebendo envios.']);
+  if(goal==='traffic') out.push(['info','Foco em tráfego','Além de CPC e CTR, avalie a qualidade da visita: sessões engajadas, páginas vistas e ações relevantes no site.']);
+  if(goal==='sales') out.push(['info','Foco em vendas','Inclua a receita atribuída e, se possível, margem e taxa de fechamento. ROAS sozinho não representa lucro.']);
+  const order={warn:0,good:1,info:2}; out.sort((a,b)=>order[a[0]]-order[b[0]]);
+  const label={warn:'Atenção',good:'Positivo',info:'Leitura'};
+  $('diagnosis').innerHTML = out.map(([s,t,p])=>`<li class="finding"><div><span class="status ${s}">${label[s]}</span></div><div><h3>${t}</h3><p>${p}</p></div></li>`).join('');
+  const warns = out.filter(o=>o[0]==='warn').length;
+  $('summary').innerHTML = warns ? `<b>${warns}</b> ${warns>1?'pontos':'ponto'} de atenção` : 'Nenhum ponto de atenção';
+  const show = target>0 && cpl>0; $('bulletBlock').hidden = !show;
+  if(show){const max=Math.max(cpl,target)*1.25;
+    $('bullet').innerHTML=`<div class="bullet-track" role="img" aria-label="CPL atual ${brl(cpl)}, meta ${brl(target)}"><span class="bullet-bar${cpl>target?' over':''}" style="width:${cpl/max*100}%"></span><span class="bullet-target" style="left:calc(${target/max*100}% - 1px)"></span></div><div class="bullet-legend"><span>CPL atual <b>${brl(cpl)}</b></span><span>Meta <b>${brl(target)}</b></span></div>`}
+}
+
+function nice(v){const p=10**Math.floor(Math.log10(v)),m=v/p;return (m<=1?1:m<=1.5?1.5:m<=2?2:m<=2.5?2.5:m<=5?5:10)*p}
+function simulate(){
+  const d=data(), cpl=d.leads&&d.spend?d.spend/d.leads:0, ns=num('newSpend'), r=num('improve')/100;
+  $('improveVal').textContent=fmt(r*100,0)+'%';
+  const ids=['baseLeads','projectedLeads','projectedCpl','deltaLeads'];
+  if(!cpl||!ns){ids.forEach(i=>{const el=$(i);el._tok=0;delete el.dataset.v;el.textContent='—';el.className='kpi-value empty'});$('cplFrom').textContent='—';$('baseDetail').textContent='Mesmo CPL, novo investimento';
+    $('simChart').innerHTML=`<div class="empty-state">${!cpl?'Informe investimento e leads nos dados da campanha para simular.':'Informe o investimento planejado para simular.'}</div>`;return}
+  const ncpl=cpl*(1-r), proj=ns/ncpl, base=ns/cpl, delta=(proj/base-1)*100;
+  [['baseLeads',base,'int'],['projectedLeads',proj,'int'],['projectedCpl',ncpl,'brl'],['deltaLeads',delta,'spct']].forEach(([i,v,f])=>{const el=$(i);el._tok=0;el.dataset.v=v;el.dataset.f=f;el.textContent=F[f](v);el.className='kpi-value'});
+  $('cplFrom').textContent='Atual: '+brl(cpl);
+  $('baseDetail').textContent='Hoje: '+int(d.leads)+' leads com '+brl(d.spend); if(delta>0)$('deltaLeads').classList.add('pos');
+  const W=640,H=260,L=56,R=24,T=20,B=36,iw=W-L-R,ih=H-T-B, ymax=nice(ns/(cpl*.5)*1.04/4)*4;
+  const x=v=>L+v/.5*iw, y=v=>T+ih-v/ymax*ih, pts=[];
+  for(let i=0;i<=50;i++){const rr=i/100;pts.push([x(rr),y(ns/(cpl*(1-rr)))])}
+  const line='M'+pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join('L'), area=line+`L${x(.5)},${y(0)}L${x(0)},${y(0)}Z`;
+  let g='';for(let i=0;i<=4;i++){const v=ymax*i/4,yy=y(v);g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="axis" x="${L-10}" y="${yy+4}" text-anchor="end">${int(v)}</text>`}
+  for(let i=0;i<=5;i++)g+=`<text class="axis" x="${x(i/10)}" y="${H-12}" text-anchor="middle">${i*10}%</text>`;
+  const bx=x(r),by=y(proj),end=r>.38;
+  $('simChart').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Com ${fmt(r*100,0)}% de lead mais barato, a projeção é de ${int(proj)} leads"><defs><linearGradient id="simGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent-soft)"/><stop offset="1" stop-color="var(--violet-soft)"/></linearGradient></defs>${g}<path class="area" d="${area}"/><line class="base" x1="${L}" x2="${W-R}" y1="${y(base)}" y2="${y(base)}"/><text class="base-label" x="${W-R}" y="${y(base)+16}" text-anchor="end">CPL atual: ${int(base)} leads</text><path class="line" d="${line}"/><circle class="dot" cx="${bx}" cy="${by}" r="5.5"/><text class="dot-label" x="${end?bx-12:bx+12}" y="${by-10}" text-anchor="${end?'end':'start'}">${int(proj)} leads</text></svg>`;
+}
+function update(){calc();diagnose();simulate();live()}
+let curRoute='inicio';
+function setCell(i,label,val){const l=$('lvL'+i),v=$('lvV'+i);l.textContent=label;if(v.textContent!==val){v.textContent=val;v.classList.remove('flash');void v.offsetWidth;v.classList.add('flash')}}
+function live(){
+  const d=data(),cpl=d.leads&&d.spend?d.spend/d.leads:0,dash='—';
+  if(curRoute==='raio-x'){
+    const tg=num('target'),warns=[...document.querySelectorAll('#diagnosis .status.warn')].length;
+    setCell(1,'Pontos de atenção',String(warns));setCell(2,'CPL atual',cpl?brl(cpl):dash);setCell(3,'Meta de CPL',tg?brl(tg):dash);
+  } else if(curRoute==='simulador'){
+    const ns=num('newSpend'),r=num('improve')/100;
+    if(!cpl||!ns){setCell(1,'Leads projetados',dash);setCell(2,'CPL projetado',dash);setCell(3,'Variação',dash);return}
+    const proj=ns/(cpl*(1-r)),base=ns/cpl;
+    setCell(1,'Leads projetados',int(proj));setCell(2,'CPL projetado',brl(cpl*(1-r)));setCell(3,'Variação',(proj>=base?'+':'')+fmt((proj/base-1)*100)+'%');
+  } else {
+    setCell(1,'CPL',cpl?brl(cpl):dash);setCell(2,'CTR',d.impr?fmt(d.clicks/d.impr*100)+'%':dash);setCell(3,'ROAS',d.spend&&d.revenue?fmt(d.revenue/d.spend,1)+'x':dash);
+  }
+}
+
+/* Navegação entre páginas */
+const tools = {
+  'calculadora':['Demonstração gratuita, passo 1 de 3','Calculadora de campanhas','Informe os números e veja na hora os indicadores e o funil da sua campanha.'],
+  'raio-x':['Demonstração gratuita, passo 2 de 3','Raio-X da campanha','Uma leitura do funil frente ao seu objetivo, com os pontos de atenção primeiro.'],
+  'simulador':['Demonstração gratuita, passo 3 de 3','Simulador de cenários','Projete o volume de leads com novo investimento e ganho de eficiência.']
+};
+function route(){
+  let r=location.hash.slice(1)||'inicio';
+  const anchor=['como-funciona','contato','sob-medida'].includes(r)?r:null; if(anchor)r='inicio';
+  if(!(r in tools)&&r!=='inicio')r='inicio';
+  const isTool=r in tools; curRoute=r; if(isTool)requestAnimationFrame(live);
+  $('page-inicio').hidden=isTool; $('page-tools').hidden=!isTool;
+  document.querySelectorAll('.menu a').forEach(a=>a.toggleAttribute('aria-current',a.dataset.route===r)||a.setAttribute('aria-current','page'));
+  document.querySelectorAll('.menu a').forEach(a=>{if(a.dataset.route===(anchor==='sob-medida'?'sob-medida':r))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  if(isTool){
+    const [c,t,l]=tools[r]; $('toolCrumb').textContent=c; $('toolTitle').textContent=t; $('toolLead').textContent=l;
+    Object.keys(tools).forEach(k=>$('view-'+k).hidden=k!==r);
+    document.querySelectorAll('.uses span').forEach(c=>c.classList.toggle('on',c.dataset.use===r));
+    const keys=Object.keys(tools),idx=keys.indexOf(r);
+    document.querySelectorAll('.progress a').forEach((a,i)=>a.classList.toggle('on',i<=idx));
+    document.title=t+' | RUDNIK Métrica Lab';
+    window.scrollTo(0,0);
+    requestAnimationFrame(()=>animateEntry(r));
+  } else {
+    document.title='RUDNIK | Métrica Lab';
+    if(anchor){requestAnimationFrame(()=>$(anchor).scrollIntoView({behavior:reduce?'auto':'smooth'}))} else window.scrollTo(0,0);
+    playHero();
+  }
+}
+function countUp(el,to,fn,dur=1000,delay=0){
+  const tok={}; el._tok=tok; const t0=performance.now()+delay;
+  const tick=t=>{if(el._tok!==tok)return;const p=Math.max(0,Math.min(1,(t-t0)/dur)),e=1-Math.pow(1-p,3);el.textContent=fn(to*e);if(p<1)requestAnimationFrame(tick);else el.textContent=fn(to)};
+  requestAnimationFrame(tick);
+}
+function countAll(scope){scope.querySelectorAll('[data-v]').forEach((el,i)=>countUp(el,+el.dataset.v,F[el.dataset.f],1000,i*60))}
+function growBars(list,dur=900){
+  list.forEach((b,i)=>{const w=b.style.width;b.style.transition='none';b.style.width='0';b.getBoundingClientRect();
+    b.style.transition=`width ${dur}ms cubic-bezier(.2,.7,.2,1) ${i*130}ms`;b.style.width=w;
+    b.addEventListener('transitionend',()=>{b.style.transition=''},{once:true})});
+}
+function stagger(list,step=70){list.forEach((el,i)=>{el.classList.remove('enter-item');el.getBoundingClientRect();el.style.animationDelay=(i*step)+'ms';el.classList.add('enter-item')})}
+function drawChart(){
+  const svg=document.querySelector('#simChart svg'); if(!svg)return;
+  const line=svg.querySelector('.line'),len=line.getTotalLength();
+  svg.classList.remove('enter'); line.style.transition='none'; line.style.strokeDasharray=len; line.style.strokeDashoffset=len;
+  svg.getBoundingClientRect(); svg.classList.add('enter');
+  line.style.transition='stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)'; line.style.strokeDashoffset=0;
+}
+function animateEntry(r){
+  if(reduce)return;
+  const head=document.querySelector('.tool-head-in'); head.classList.remove('enter'); head.getBoundingClientRect(); head.classList.add('enter');
+  if(r==='calculadora'){countAll($('metrics'));growBars([...document.querySelectorAll('#funnel .stage-bar')]);stagger([...document.querySelectorAll('#funnel .pass span')],250)}
+  if(r==='raio-x'){growBars([...document.querySelectorAll('#bullet .bullet-bar')],1000);stagger([...document.querySelectorAll('#diagnosis .finding')],90)}
+  if(r==='simulador'){countAll(document.querySelector('.kpis.four'));drawChart()}
+}
+function playHero(){
+  const bars=document.querySelectorAll('.pv-row .t span');
+  bars.forEach(b=>{b.style.transition='none';b.style.width='0'}); document.body.getBoundingClientRect();
+  requestAnimationFrame(()=>bars.forEach((b,i)=>{b.style.transition='';b.style.transitionDelay=(i*120)+'ms';b.style.width=b.dataset.w+'%'}));
+  if(reduce)return;
+  document.querySelectorAll('[data-count]').forEach(el=>countUp(el,+el.dataset.count,F[el.dataset.fmt==='pct'?'pct1':el.dataset.fmt],1100));
+}
+
+/* Rede de conexões animada */
+const PAL=['127,178,234','94,208,191','179,166,242','244,242,122'];
+function Net(host,{density=11000,max=120}={}){
+  const c=document.createElement('canvas');c.className='net';c.setAttribute('aria-hidden','true');host.prepend(c);
+  const ctx=c.getContext('2d'),D=150,rnd=(a,b)=>a+Math.random()*(b-a);
+  let w=0,h=0,nodes=[],packets=[],run=false,raf=0,mouse=null,vis=false;
+  function seed(){const n=Math.min(max,Math.round(w*h/density));
+    nodes=Array.from({length:n},()=>({x:rnd(0,w),y:rnd(0,h),vx:rnd(-.2,.2),vy:rnd(-.2,.2),hub:Math.random()<.14,ph:rnd(0,6.28),col:PAL[Math.random()*PAL.length|0]}));packets=[]}
+  function resize(){const r=host.getBoundingClientRect();if(!r.width||!r.height)return;
+    const dpr=Math.min(2,devicePixelRatio||1);w=r.width;h=r.height;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);seed();draw(0)}
+  function draw(t){
+    ctx.clearRect(0,0,w,h);
+    if(!reduce)for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<-20)n.x=w+20;else if(n.x>w+20)n.x=-20;if(n.y<-20)n.y=h+20;else if(n.y>h+20)n.y=-20}
+    ctx.lineWidth=1;
+    for(let i=0;i<nodes.length;i++){const a=nodes[i];for(let j=i+1;j<nodes.length;j++){const b=nodes[j],dx=a.x-b.x,dy=a.y-b.y,d2=dx*dx+dy*dy;
+      if(d2<D*D){ctx.strokeStyle=`rgba(127,178,234,${(1-Math.sqrt(d2)/D)*.3})`;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}}
+    if(mouse)for(const n of nodes){const d=Math.hypot(n.x-mouse.x,n.y-mouse.y);if(d<190){ctx.strokeStyle=`rgba(155,196,240,${(1-d/190)*.55})`;ctx.beginPath();ctx.moveTo(n.x,n.y);ctx.lineTo(mouse.x,mouse.y);ctx.stroke()}}
+    if(!reduce&&packets.length<8&&Math.random()<.05&&nodes.length){const a=nodes[Math.random()*nodes.length|0];
+      const near=nodes.filter(b=>b!==a&&(a.x-b.x)**2+(a.y-b.y)**2<D*D);if(near.length)packets.push({a,b:near[Math.random()*near.length|0],t:0,col:PAL[Math.random()*PAL.length|0]})}
+    packets=packets.filter(p=>{p.t+=.014;if(p.t>=1)return false;const x=p.a.x+(p.b.x-p.a.x)*p.t,y=p.a.y+(p.b.y-p.a.y)*p.t;
+      ctx.fillStyle=`rgba(${p.col},.28)`;ctx.beginPath();ctx.arc(x,y,5,0,6.283);ctx.fill();
+      ctx.fillStyle=`rgba(${p.col},1)`;ctx.beginPath();ctx.arc(x,y,1.9,0,6.283);ctx.fill();return true});
+    for(const n of nodes){if(n.hub){const p=.5+.5*Math.sin(t/900+n.ph);
+        ctx.fillStyle=`rgba(${n.col},${.1+.18*p})`;ctx.beginPath();ctx.arc(n.x,n.y,6+4*p,0,6.283);ctx.fill();
+        ctx.fillStyle=`rgba(${n.col},.95)`;ctx.beginPath();ctx.arc(n.x,n.y,2.4,0,6.283);ctx.fill()}
+      else{ctx.fillStyle='rgba(169,188,208,.55)';ctx.beginPath();ctx.arc(n.x,n.y,1.5,0,6.283);ctx.fill()}}
+  }
+  function loop(t){draw(t);if(run)raf=requestAnimationFrame(loop)}
+  function set(on){if(reduce)return;if(on&&!run){run=true;raf=requestAnimationFrame(loop)}else if(!on&&run){run=false;cancelAnimationFrame(raf)}}
+  new ResizeObserver(resize).observe(host);
+  new IntersectionObserver(e=>{vis=e[0].isIntersecting;if(vis&&!w)resize();set(vis&&!document.hidden)}).observe(host);
+  document.addEventListener('visibilitychange',()=>set(vis&&!document.hidden));
+  host.addEventListener('pointermove',e=>{const r=host.getBoundingClientRect();mouse={x:e.clientX-r.left,y:e.clientY-r.top}});
+  host.addEventListener('pointerleave',()=>{mouse=null});
+}
+
+/* Passos da página inicial */
+function stepsAnim(){
+  const box=document.querySelector('.steps'), line=$('miniLine'), len=line.getTotalLength(), area=$('miniArea'), dot=$('miniDot'), guide=$('miniGuide');
+  const place=f=>{const p=line.getPointAtLength(len*f);dot.setAttribute('cx',p.x);dot.setAttribute('cy',p.y);guide.setAttribute('x1',p.x);guide.setAttribute('x2',p.x);guide.setAttribute('y1',p.y)};
+  if(reduce){place(.7);box.classList.add('in');return}
+  const items=[...document.querySelectorAll('.mini-list div')];
+  items.forEach(i=>i.style.opacity=0);
+  line.style.strokeDasharray=len;line.style.strokeDashoffset=len;area.style.opacity=0;dot.style.opacity=0;guide.style.opacity=0;
+  let played=false,looping=false,raf=0,start=0;
+  const loop=t=>{if(!start)start=t;const s=.5-.5*Math.cos((t-start)/2400);place(.12+.8*s);if(looping)raf=requestAnimationFrame(loop)};
+  new IntersectionObserver(e=>{
+    const on=e[0].isIntersecting;
+    if(on&&!played){played=true;box.classList.add('in');
+      document.querySelectorAll('[data-mini]').forEach((el,i)=>countUp(el,+el.dataset.mini,F[el.dataset.fmt],1000,i*120));
+      items.forEach((el,i)=>{el.style.opacity='';el.style.animationDelay=(300+i*180)+'ms';el.classList.add('enter-item')});
+      line.style.transition='stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';line.style.strokeDashoffset=0;
+      area.style.transition='opacity .8s ease .7s';area.style.opacity=1;
+      place(.12);
+      setTimeout(()=>{dot.style.transition=guide.style.transition='opacity .4s';dot.style.opacity=1;guide.style.opacity='';looping=true;start=0;raf=requestAnimationFrame(loop)},1400);
+    } else if(played){if(on&&!looping&&dot.style.opacity==='1'){looping=true;start=0;raf=requestAnimationFrame(loop)}else if(!on){looping=false;cancelAnimationFrame(raf)}}
+  },{threshold:.35}).observe(box);
+}
+window.addEventListener('hashchange',route);
+
+$('resetBtn').addEventListener('click',()=>{[['spend',5000],['impr',250000],['clicks',10000],['leads',200],['revenue',18000]].forEach(([id,v])=>setVal(id,v));update()});
+document.querySelectorAll('input[data-kind]').forEach(el=>{el.addEventListener('input',e=>{mask(e);update()});el.addEventListener('focus',()=>{requestAnimationFrame(()=>el.setSelectionRange(el.value.length,el.value.length))})});
+[['spend',5000],['impr',250000],['clicks',10000],['leads',200],['revenue',18000],['target',20],['newSpend',7000]].forEach(([id,v])=>setVal(id,v));
+$('goal').addEventListener('change',()=>{diagnose();live()});
+$('improve').addEventListener('input',()=>{simulate();live()});
+update(); route();
+Net(document.querySelector('.hero'));
+Net(document.querySelector('.tool-head'),{density:14000});
+Net(document.querySelector('.cta-band'),{density:14000,max:70});
+
+/* Contato pelo WhatsApp */
+const WHATSAPP = '5541995996976'; // DDI 55 + DDD 41 + número
+const BASE_MSG = 'Olá! Vi a demonstração do RUDNIK | Métrica Lab e quero solicitar o diagnóstico da minha operação.';
+const waLink = msg => 'https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(msg);
+function demoSummary(){const d=data(),p=['investimento de '+brl(d.spend)];
+  if(d.leads&&d.spend)p.push('CPL de '+brl(d.spend/d.leads));
+  if(d.impr)p.push('CTR de '+fmt(d.clicks/d.impr*100)+'%');
+  if(d.revenue&&d.spend)p.push('ROAS de '+fmt(d.revenue/d.spend,1)+'x');
+  return p.join(', ')}
+$('waFloat').href = waLink(BASE_MSG);
+$('contactForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const name=$('cName').value.trim();
+  if(!name){$('cName').classList.add('invalid');$('cNameErr').hidden=false;$('cName').focus();return}
+  const l=[BASE_MSG,'','Nome: '+name];
+  const co=$('cCompany').value.trim(); if(co)l.push('Empresa: '+co);
+  l.push('Investimento mensal em mídia: '+$('cBudget').value,'Quem cuida da mídia: '+$('cWho').value,'Objetivo: '+$('cGoal').value);
+  if($('cDemo').checked)l.push('','Números da demonstração: '+demoSummary()+'.');
+  window.open(waLink(l.join('\n')),'_blank','noopener');
+});
+$('cName').addEventListener('input',()=>{$('cName').classList.remove('invalid');$('cNameErr').hidden=true});
+
+/* Botão flutuante: some quando o formulário está na tela */
+let contactVisible=false, tipDone=false;
+new IntersectionObserver(e=>{contactVisible=e[0].isIntersecting;$('waFloat').classList.toggle('away',contactVisible);if(contactVisible)$('waTip').hidden=true},{threshold:.25}).observe($('contato'));
+const closeTip=()=>{$('waTip').hidden=true;tipDone=true};
+$('waTipClose').addEventListener('click',closeTip);
+$('waFloat').addEventListener('click',closeTip);
+setTimeout(()=>{if(tipDone||contactVisible)return;$('waTip').hidden=false;setTimeout(()=>{if(!tipDone)closeTip()},12000)},7000);
+stepsAnim();
+/* Painel ilustrativo */
+function dashInit(){
+  const root=$('dash'); if(!root)return;
+  root.querySelectorAll('[data-spark]').forEach(svg=>{
+    const v=svg.dataset.spark.split(',').map(Number),mn=Math.min(...v),mx=Math.max(...v),c=`var(--${svg.dataset.c})`;
+    const pts=v.map((y,i)=>[i/(v.length-1)*116+2, 30-(y-mn)/((mx-mn)||1)*26]);
+    svg.innerHTML=`<path d="M${pts.map(p=>p.join(',')).join('L')}" style="stroke:${c}"/>`;
+  });
+  const inv=[38,40,41,44,45,48.2],rev=[142,151,160,178,186,212.4],mes=['Mai','Jun','Jul','Ago','Set','Out'];
+  const sm=matchMedia('(max-width:720px)').matches;
+  const W=sm?340:640,H=sm?220:240,L=sm?56:74,R=sm?6:12,T=14,B=28,iw=W-L-R,ih=H-T-B,ymax=250,step=iw/6;
+  $('dashChart').setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const y=v=>T+ih-v/ymax*ih,x=i=>L+step*(i+.5);
+  let g='';for(let k=0;k<=5;k+=(sm?2:1)){const v=k*50,yy=y(v);g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}"/><text class="axis" x="${L-8}" y="${yy+4}" text-anchor="end">${v?(sm?v+' mil':'R$ '+v+' mil'):'0'}</text>`}
+  const bw=step*(sm?.5:.38);
+  inv.forEach((v,i)=>{g+=`<rect class="dbar" x="${x(i)-bw/2}" y="${y(v)}" width="${bw}" height="${y(0)-y(v)}" rx="3" style="transition-delay:${i*80}ms"/>`;g+=`<text class="axis" x="${x(i)}" y="${H-8}" text-anchor="middle">${mes[i]}</text>`});
+  const lp='M'+rev.map((v,i)=>x(i)+','+y(v)).join('L');
+  g+=`<path class="dline" d="${lp}"/>`+rev.map((v,i)=>`<circle class="dpt" cx="${x(i)}" cy="${y(v)}" r="4" style="transition-delay:${900+i*80}ms"/>`).join('');
+  $('dashChart').innerHTML=g;
+  const ch=[['Busca paga',5.2],['Marketplaces',6.1],['Redes sociais',2.9],['E-mail',4.6]],cmax=7,goal=4;
+  $('chans').innerHTML=ch.map(([n,v])=>`<div class="chan"><span>${n}</span><div class="chan-track"><span class="chan-bar${v<goal?' below':''}" data-w="${v/cmax*100}"></span><span class="chan-goal" style="left:calc(${goal/cmax*100}% - 1px)"></span></div><b>${fmt(v,1)}x</b></div>`).join('');
+  const bars=[...root.querySelectorAll('.chan-bar')],opps=[...root.querySelectorAll('.opp.reveal')],line=root.querySelector('.dline'),len=line.getTotalLength();
+  const show=()=>{root.classList.add('in');bars.forEach((b,i)=>{b.style.transitionDelay=(300+i*120)+'ms';b.style.width=b.dataset.w+'%'});opps.forEach((o,i)=>o.style.transitionDelay=(1300+i*150)+'ms')};
+  if(reduce){show();return}
+  line.style.strokeDasharray=len;line.style.strokeDashoffset=len;
+  new IntersectionObserver((e,o)=>{if(!e[0].isIntersecting)return;o.disconnect();show();
+    line.style.transition='stroke-dashoffset 1.3s cubic-bezier(.4,0,.2,1) .4s';line.style.strokeDashoffset=0;
+    root.querySelectorAll('[data-dv]').forEach((el,i)=>countUp(el,+el.dataset.dv,F[el.dataset.f],1100,i*90));
+  },{threshold:.3}).observe(root);
+}
+dashInit();
+$('liveGo').addEventListener('click',()=>{const v=document.querySelector('.workspace > section.panel');v.scrollIntoView({behavior:reduce?'auto':'smooth'})});
+/* Carrosséis no celular: pontos indicadores e plano em destaque centralizado */
+(function(){
+  const mq=matchMedia('(max-width:720px)');
+  document.querySelectorAll('.plans,.steps,.personas,.opps').forEach(el=>{
+    const items=[...el.children].filter(c=>!c.classList.contains('rail-fill'));
+    if(items.length<2)return;
+    const dots=document.createElement('div');dots.className='car-dots';dots.setAttribute('aria-hidden','true');
+    items.forEach(()=>dots.append(document.createElement('i')));
+    el.after(dots);
+    const upd=()=>{const step=items[1].offsetLeft-items[0].offsetLeft||1;const i=Math.min(items.length-1,Math.round(el.scrollLeft/step));
+      [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i))};
+    el.addEventListener('scroll',upd,{passive:true});
+    new ResizeObserver(upd).observe(el);
+    const feat=el.querySelector('.plan.featured');
+    const center=()=>{if(mq.matches&&feat)el.scrollLeft=feat.offsetLeft-items[0].offsetLeft;upd()};
+    if(feat){center();mq.addEventListener('change',center)}
+  });
+})();
+
+
+/* Menu fixo: altura real e sombra ao rolar */
+const bar=document.querySelector('.appbar');
+new ResizeObserver(()=>document.documentElement.style.setProperty('--hdr',bar.offsetHeight+'px')).observe(bar);
+const onScroll=()=>bar.classList.toggle('scrolled',scrollY>4);
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
